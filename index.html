@@ -2061,42 +2061,82 @@ function renderVertical(area, type) {
   setTimeout(()=>ans.focus(),60);
 }
 
+// ── Blocks legend modal ───────────────────────────────────────────────────────
+function showBlocksLegend(onClose) {
+  const overlay=document.createElement('div');
+  overlay.style.cssText='position:fixed;inset:0;background:rgba(0,0,0,.45);z-index:500;display:flex;align-items:center;justify-content:center;padding:20px';
+
+  const modal=document.createElement('div');
+  modal.style.cssText='background:white;border-radius:20px;padding:22px 20px;max-width:340px;width:100%;box-shadow:0 12px 40px rgba(0,0,0,.2)';
+  modal.innerHTML=`
+    <div style="text-align:center;font-size:1rem;font-weight:800;color:#1a3a5c;margin-bottom:14px;">🧱 How to read the blocks</div>
+    <div style="display:flex;flex-direction:column;gap:12px;margin-bottom:18px;">
+      <div style="display:flex;align-items:center;gap:12px;background:#f5f0ff;border-radius:12px;padding:10px 14px;">
+        <div style="width:36px;height:36px;background:#7a4fa8;border-radius:6px;flex-shrink:0;"></div>
+        <div><div style="font-weight:800;color:#1a3a5c;font-size:1rem;">Big square = <span style="color:#7a4fa8">100</span></div>
+        <div style="font-size:.78rem;color:#7a9ab8">Each purple block counts as one hundred</div></div>
+      </div>
+      <div style="display:flex;align-items:center;gap:12px;background:#eef5fd;border-radius:12px;padding:10px 14px;">
+        <div style="width:14px;height:36px;background:#2a6fa8;border-radius:4px;flex-shrink:0;"></div>
+        <div><div style="font-weight:800;color:#1a3a5c;font-size:1rem;">Tall bar = <span style="color:#2a6fa8">10</span></div>
+        <div style="font-size:.78rem;color:#7a9ab8">Each blue bar counts as ten</div></div>
+      </div>
+      <div style="display:flex;align-items:center;gap:12px;background:#f0fdf6;border-radius:12px;padding:10px 14px;">
+        <div style="width:14px;height:14px;background:#2a9d5c;border-radius:3px;flex-shrink:0;"></div>
+        <div><div style="font-weight:800;color:#1a3a5c;font-size:1rem;">Small square = <span style="color:#2a9d5c">1</span></div>
+        <div style="font-size:.78rem;color:#7a9ab8">Each green square counts as one</div></div>
+      </div>
+    </div>
+    <button id="legend-ok" style="width:100%;padding:12px;background:#2a6fa8;color:white;border:none;border-radius:12px;font-size:1rem;font-weight:700;cursor:pointer;">Got it! Let's count 🧮</button>`;
+
+  overlay.appendChild(modal);
+  document.body.appendChild(overlay);
+  modal.querySelector('#legend-ok').onclick = () => { overlay.remove(); onClose(); };
+}
+
 // ── Blocks ────────────────────────────────────────────────────────────────────
 function renderBlocks(area) {
+  showBlocksLegend(() => buildBlocksActivity(area));
+}
+
+function buildBlocksActivity(area) {
   const { h, t, o } = m4Act;
+
   const title=document.createElement('div'); title.className='pat-label';
-  title.style.marginBottom='10px'; title.textContent='Count the blocks — how many are there?';
+  title.style.marginBottom='10px';
+  const infoBtn=document.createElement('span');
+  infoBtn.textContent='ℹ️ How to read blocks';
+  infoBtn.style.cssText='cursor:pointer;color:#2a6fa8;font-weight:700;font-size:.78rem;text-transform:none;letter-spacing:0';
+  infoBtn.onclick=()=>showBlocksLegend(()=>{});
+  title.textContent='Count the blocks — how many are there?  ';
+  title.appendChild(infoBtn);
   area.appendChild(title);
 
   const card=document.createElement('div'); card.className='card m2-card';
   card.style.height='auto'; card.style.padding='16px';
   const bw=document.createElement('div'); bw.className='blocks-wrap';
-
   const row=document.createElement('div'); row.className='blocks-row';
 
-  // Hundreds
+  // Hundreds — no label, no text inside
   if(h>0){
     const g=document.createElement('div'); g.className='block-group';
     const gr=document.createElement('div'); gr.className='block-grid';
-    for(let i=0;i<h;i++){const b=document.createElement('div');b.className='blk-h';b.textContent='100';gr.appendChild(b);}
-    const l=document.createElement('div'); l.className='block-label'; l.textContent=`${h} hundred${h>1?'s':''}`;
-    g.appendChild(gr); g.appendChild(l); row.appendChild(g);
+    for(let i=0;i<h;i++){const b=document.createElement('div');b.className='blk-h';gr.appendChild(b);}
+    g.appendChild(gr); row.appendChild(g);
   }
-  // Tens
+  // Tens — no label
   if(t>0){
     const g=document.createElement('div'); g.className='block-group';
     const gr=document.createElement('div'); gr.className='block-grid';
     for(let i=0;i<t;i++){const b=document.createElement('div');b.className='blk-t';gr.appendChild(b);}
-    const l=document.createElement('div'); l.className='block-label'; l.textContent=`${t} ten${t>1?'s':''}`;
-    g.appendChild(gr); g.appendChild(l); row.appendChild(g);
+    g.appendChild(gr); row.appendChild(g);
   }
-  // Ones
+  // Ones — no label
   if(o>0){
     const g=document.createElement('div'); g.className='block-group';
     const gr=document.createElement('div'); gr.className='block-grid';
     for(let i=0;i<o;i++){const b=document.createElement('div');b.className='blk-o';gr.appendChild(b);}
-    const l=document.createElement('div'); l.className='block-label'; l.textContent=`${o} one${o>1?'s':''}`;
-    g.appendChild(gr); g.appendChild(l); row.appendChild(g);
+    g.appendChild(gr); row.appendChild(g);
   }
 
   bw.appendChild(row);
