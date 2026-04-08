@@ -239,6 +239,80 @@
     /* ── Confetti ── */
     #confetti { position: fixed; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; z-index: 200; }
 
+    /* ══ MODULE 4: Math Operations ═══════════════════════════════════════════ */
+
+    /* More / Less options */
+    .ml-options { display: flex; flex-wrap: wrap; gap: 10px; justify-content: center; margin-bottom: 12px; }
+    .ml-opt {
+      min-width: clamp(70px,20vw,110px); padding: clamp(10px,2.5vw,14px) clamp(12px,3vw,18px);
+      border-radius: 14px; border: 2px solid #dceefa; background: white;
+      font-size: clamp(1.1rem,3.5vw,1.5rem); font-weight: 800; color: #1a3a5c;
+      cursor: pointer; transition: all .18s; text-align: center;
+    }
+    .ml-opt:hover { border-color:#2a6fa8; background:#e8f4fd; transform:scale(1.04); }
+    .ml-opt.sel-correct { border-color:#2a9d5c; background:#f0fdf6; color:#2a9d5c; }
+    .ml-opt.sel-wrong   { border-color:#d94040; background:#fff5f5; color:#d94040; }
+    .ml-opt.show-correct{ border-color:#2a9d5c; background:#f0fdf6; }
+    .ml-opt:disabled    { cursor:not-allowed; }
+
+    /* Robot */
+    .robot-wrap {
+      display: flex; align-items: center; justify-content: center;
+      gap: clamp(10px,3vw,22px); padding: 10px 4px;
+    }
+    .robot-body {
+      display: flex; flex-direction: column; align-items: center; gap: 4px;
+    }
+    .robot-screen {
+      background: #1a3a5c; color: #7ef0a0; border-radius: 14px;
+      padding: clamp(10px,2.5vw,16px) clamp(14px,3vw,22px);
+      font-size: clamp(1.6rem,6vw,2.8rem); font-weight: 900; font-family: monospace;
+      box-shadow: 0 0 0 3px #2a6fa8;
+    }
+    .robot-emoji { font-size: clamp(2rem,7vw,3.2rem); line-height:1; }
+    .robot-side  { display: flex; flex-direction: column; align-items: center; gap: 6px; }
+    .robot-blank {
+      width: clamp(72px,20vw,100px); padding: clamp(8px,2vw,12px) 6px; text-align: center;
+      border: 2px dashed #adc8e0; border-radius: 12px; background: #f8fcff;
+      font-size: clamp(1.1rem,3.5vw,1.5rem); font-weight: 800; color: #2a6fa8; outline: none;
+      transition: border-color .2s;
+    }
+    .robot-blank:focus   { border-color:#2a6fa8; border-style:solid; }
+    .robot-blank.correct { border-color:#2a9d5c; border-style:solid; background:#f0fdf6; color:#2a9d5c; }
+    .robot-blank.wrong   { border-color:#d94040; border-style:solid; background:#fff5f5; color:#d94040; }
+    .robot-label { font-size:.7rem; font-weight:700; color:#7a9ab8; text-transform:uppercase; }
+
+    /* Vertical addition / subtraction */
+    .vert-calc {
+      display: inline-flex; flex-direction: column; align-items: flex-end;
+      background: #f8fcff; border: 2px solid #dceefa; border-radius: 18px;
+      padding: clamp(14px,3vw,22px) clamp(18px,4vw,32px); gap: 2px;
+    }
+    .vc-row { display: flex; align-items: center; gap: 8px; }
+    .vc-op  { font-size: clamp(1.4rem,4.5vw,2rem); font-weight:900; color:#2a6fa8; min-width:1.2ch; }
+    .vc-num { font-size: clamp(1.6rem,5.5vw,2.4rem); font-weight:900; color:#1a3a5c; font-family:monospace; letter-spacing:.05em; }
+    .vc-line{ width:100%; border:none; border-top:3px solid #1a3a5c; margin:4px 0; }
+    .vc-ans {
+      font-size: clamp(1.6rem,5.5vw,2.4rem); font-weight:900; font-family:monospace;
+      width: clamp(90px,25vw,160px); text-align:right; border:none;
+      border-bottom: 3px solid #adc8e0; background:transparent; color:#2a6fa8;
+      outline:none; letter-spacing:.05em;
+    }
+    .vc-ans.correct { border-color:#2a9d5c; color:#2a9d5c; }
+    .vc-ans.wrong   { border-color:#d94040; color:#d94040; }
+    .vc-center { text-align:center; }
+
+    /* Count blocks */
+    .blocks-wrap { display:flex; flex-direction:column; gap:12px; padding:8px 0; }
+    .blocks-row  { display:flex; align-items:center; gap:10px; justify-content:center; flex-wrap:wrap; }
+    .block-group { display:flex; flex-direction:column; align-items:center; gap:4px; }
+    .block-label { font-size:.68rem; font-weight:700; color:#7a9ab8; text-transform:uppercase; }
+    .block-grid  { display:flex; flex-wrap:wrap; gap:2px; max-width:clamp(90px,22vw,130px); }
+    .blk-h { width:clamp(28px,7vw,40px); height:clamp(28px,7vw,40px); background:#7a4fa8; border-radius:4px; display:flex; align-items:center; justify-content:center; color:white; font-size:.6rem; font-weight:700; }
+    .blk-t { width:clamp(10px,2.5vw,14px); height:clamp(28px,7vw,40px); background:#2a6fa8; border-radius:3px; }
+    .blk-o { width:clamp(10px,2.5vw,14px); height:clamp(10px,2.5vw,14px); background:#2a9d5c; border-radius:2px; }
+    .blocks-question { text-align:center; font-size:clamp(.9rem,2.5vw,1.1rem); font-weight:700; color:#1a3a5c; }
+
     /* ══ MODULE 3: Order & Patterns ══════════════════════════════════════════ */
 
     /* Number Pattern */
@@ -457,6 +531,7 @@
     <button class="mod-btn active" id="mod-btn-1" onclick="setModule(1)">🔢 Words</button>
     <button class="mod-btn"        id="mod-btn-2" onclick="setModule(2)">⚖️ Compare</button>
     <button class="mod-btn"        id="mod-btn-3" onclick="setModule(3)">🎮 Order</button>
+    <button class="mod-btn"        id="mod-btn-4" onclick="setModule(4)">➕ Math</button>
   </div>
 
   <!-- ═══ MODULE 1: Number Words ═══ -->
@@ -703,6 +778,36 @@
     <button class="next-btn"  id="m3-next-btn"  onclick="m3Next()"  style="display:none">Next →</button>
 
   </div><!-- end mod3 -->
+
+  <!-- ═══ MODULE 4: Math Operations ═══ -->
+  <div id="mod4" style="display:none">
+
+    <div class="header">
+      <h1>➕ Math Operations</h1>
+      <p>More/Less, Addition, Subtraction &amp; Blocks!</p>
+    </div>
+
+    <div class="act-type-bar">
+      <span class="act-pill active" id="m4-pill-mix"      onclick="m4SetType('mix')">🎲 Mix</span>
+      <span class="act-pill"        id="m4-pill-moreless"  onclick="m4SetType('moreless')">↕️ More/Less</span>
+      <span class="act-pill"        id="m4-pill-robot"     onclick="m4SetType('robot')">🤖 Robot</span>
+      <span class="act-pill"        id="m4-pill-addition"  onclick="m4SetType('addition')">➕ Addition</span>
+      <span class="act-pill"        id="m4-pill-subtraction" onclick="m4SetType('subtraction')">➖ Subtraction</span>
+      <span class="act-pill"        id="m4-pill-blocks"    onclick="m4SetType('blocks')">🧱 Blocks</span>
+    </div>
+
+    <div class="score-bar">
+      <span class="score-correct">✓ <span id="m4-correct">0</span> correct</span>
+      <span class="score-total"><span id="m4-done">0</span> / <span id="m4-total">8</span></span>
+      <span class="score-wrong">✗ <span id="m4-wrong">0</span> wrong</span>
+    </div>
+
+    <div id="m4-area"></div>
+
+    <button class="check-btn" id="m4-check-btn" onclick="m4Check()" style="display:none">Check Answer</button>
+    <button class="next-btn"  id="m4-next-btn"  onclick="m4Next()"  style="display:none">Next →</button>
+
+  </div><!-- end mod4 -->
 
 </div>
 
@@ -1023,12 +1128,13 @@ function launchConfetti() {
 
 // ── Module switcher ───────────────────────────────────────────────────────────
 function setModule(n) {
-  [1,2,3].forEach(i => {
+  [1,2,3,4].forEach(i => {
     document.getElementById('mod-btn-'+i).classList.toggle('active', i === n);
     document.getElementById('mod'+i).style.display = i === n ? '' : 'none';
   });
   if (n === 2) m2Init();
   if (n === 3) m3Init();
+  if (n === 4) m4Init();
 }
 
 // ── Module 2 state ────────────────────────────────────────────────────────────
@@ -1723,6 +1829,340 @@ function m3Results() {
   const emoji=pct===100?'🏆':pct>=70?'⭐':'💪';
   showToast(`${emoji} Done! ${m3Score.correct}/${m3Score.total} (${pct}%)`, pct>=70?'success':'');
   setTimeout(m3Init,2500);
+}
+
+// ══ MODULE 4: Math Operations ════════════════════════════════════════════════
+
+let m4Type  = 'mix';
+let m4Act   = null;
+let m4Score = { correct:0, wrong:0, done:0, total:8 };
+
+function m4SetType(t) {
+  m4Type = t;
+  document.querySelectorAll('[id^="m4-pill-"]').forEach(p => p.classList.remove('active'));
+  document.getElementById('m4-pill-'+t).classList.add('active');
+  m4Init();
+}
+
+function m4Init() {
+  m4Score = { correct:0, wrong:0, done:0, total:8 };
+  m4UpdateScore();
+  m4Next();
+}
+
+function m4Next() {
+  if (m4Score.done >= m4Score.total) { m4Results(); return; }
+  const pool = m4Type==='mix'
+    ? ['moreless','moreless','robot','addition','subtraction','blocks']
+    : [m4Type];
+  const type = pool[Math.floor(Math.random()*pool.length)];
+  m4Act = m4Gen(type);
+  m4Render();
+}
+
+// ── Helpers ───────────────────────────────────────────────────────────────────
+function m4Ri(min,max){ return Math.floor(Math.random()*(max-min+1))+min; }
+
+function m4Shuffle(a){ for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]];}return a; }
+
+function m4Options(correct, n=4){
+  const s=new Set([correct]);
+  const v=[1,-1,2,-2,5,-5,10,-10,50,-50,100,-100];
+  for(const d of v){ if(s.size>=n) break; const c=correct+d; if(c>0) s.add(c); }
+  return m4Shuffle([...s]);
+}
+
+function noCarry(a,b){
+  let x=a,y=b;
+  while(x>0||y>0){ if((x%10)+(y%10)>=10) return false; x=Math.floor(x/10); y=Math.floor(y/10); }
+  return true;
+}
+function noBorrow(a,b){
+  let x=a,y=b;
+  while(x>0||y>0){ if((x%10)<(y%10)) return false; x=Math.floor(x/10); y=Math.floor(y/10); }
+  return true;
+}
+
+// ── Generators ────────────────────────────────────────────────────────────────
+function m4Gen(type) {
+  const isHard = difficulty==='hard';
+
+  if (type==='moreless') {
+    const ops = difficulty==='easy'
+      ? [{l:'1 more',d:1},{l:'1 less',d:-1}]
+      : difficulty==='medium'
+      ? [{l:'1 more',d:1},{l:'1 less',d:-1},{l:'10 more',d:10},{l:'10 less',d:-10}]
+      : [{l:'10 more',d:10},{l:'10 less',d:-10},{l:'100 more',d:100},{l:'100 less',d:-100}];
+    const op  = ops[Math.floor(Math.random()*ops.length)];
+    const mn  = Math.max(1,-op.d+1), mx = difficulty==='easy'?98:difficulty==='medium'?990:900;
+    const num = m4Ri(mn,mx);
+    const ans = num+op.d;
+    return { type:'moreless', isHard,
+      prompt:`What is <b>${op.l}</b> than <b>${num}</b>?`,
+      answer:ans.toString(), options:m4Options(ans) };
+  }
+
+  if (type==='robot') {
+    const [mn,mx] = difficulty==='easy'?[2,98]:[11,998];
+    const num = m4Ri(mn,mx);
+    return { type:'robot', num, answers:[(num-1).toString(),(num+1).toString()] };
+  }
+
+  if (type==='addition') {
+    let a,b;
+    if (difficulty==='easy') {
+      do { a=m4Ri(10,89); b=m4Ri(1,9); } while(!noCarry(a,b));
+    } else if (difficulty==='medium') {
+      do { a=m4Ri(100,899); b=m4Ri(10,99); } while(!noCarry(a,b));
+    } else {
+      a=m4Ri(100,899); b=m4Ri(10,99);
+    }
+    return { type:'addition', a, b, answer:(a+b).toString() };
+  }
+
+  if (type==='subtraction') {
+    let a,b;
+    if (difficulty==='easy') {
+      do { a=m4Ri(11,99); b=m4Ri(1,9); } while(!noBorrow(a,b)||a===b);
+    } else if (difficulty==='medium') {
+      do { a=m4Ri(110,999); b=m4Ri(10,99); } while(!noBorrow(a,b)||a===b);
+    } else {
+      do { a=m4Ri(110,999); b=m4Ri(10,99); } while(a<=b);
+    }
+    return { type:'subtraction', a, b, answer:(a-b).toString() };
+  }
+
+  // blocks
+  const h = difficulty==='easy'?m4Ri(1,3):m4Ri(1,9);
+  const t = m4Ri(0,9);
+  const o = m4Ri(0,9);
+  const total = h*100+t*10+o;
+  return { type:'blocks', h, t, o, answer:total.toString() };
+}
+
+// ── Render ────────────────────────────────────────────────────────────────────
+function m4Render() {
+  const area = document.getElementById('m4-area');
+  area.innerHTML='';
+  document.getElementById('m4-check-btn').style.display='none';
+  document.getElementById('m4-next-btn').style.display='none';
+
+  const { type } = m4Act;
+  if (type==='moreless')    renderMoreLess(area);
+  if (type==='robot')       renderRobot(area);
+  if (type==='addition')    renderVertical(area,'addition');
+  if (type==='subtraction') renderVertical(area,'subtraction');
+  if (type==='blocks')      renderBlocks(area);
+}
+
+// ── More / Less ───────────────────────────────────────────────────────────────
+function renderMoreLess(area) {
+  const { prompt, answer, options, isHard } = m4Act;
+
+  const card = document.createElement('div'); card.className='card m2-card';
+  const q = document.createElement('div'); q.className='m2-question'; q.innerHTML=prompt;
+  card.appendChild(q); area.appendChild(card);
+
+  if (!isHard) {
+    const wrap = document.createElement('div'); wrap.className='ml-options';
+    options.forEach(opt => {
+      const btn = document.createElement('button'); btn.className='ml-opt'; btn.textContent=opt;
+      btn.onclick = () => {
+        if (btn.disabled) return;
+        const ok = opt.toString()===answer;
+        wrap.querySelectorAll('.ml-opt').forEach(b=>{
+          b.disabled=true;
+          if(b.textContent===answer) b.classList.add('sel-correct');
+          else if(b===btn&&!ok) b.classList.add('sel-wrong');
+        });
+        m4Resolve(ok, card);
+      };
+      wrap.appendChild(btn);
+    });
+    area.appendChild(wrap);
+  } else {
+    const inp=document.createElement('input'); inp.className='answer-input';
+    inp.type='text'; inp.inputMode='numeric'; inp.placeholder='Type your answer...';
+    inp.onkeydown=e=>{if(e.key==='Enter')m4Check();};
+    const w=document.createElement('div'); w.className='input-area'; w.appendChild(inp);
+    area.appendChild(w);
+    document.getElementById('m4-check-btn').style.display='block';
+    setTimeout(()=>inp.focus(),60);
+  }
+}
+
+// ── Robot ─────────────────────────────────────────────────────────────────────
+function renderRobot(area) {
+  const { num } = m4Act;
+  const title=document.createElement('div'); title.className='pat-label';
+  title.style.marginBottom='10px'; title.textContent='Find 1 less and 1 more';
+  area.appendChild(title);
+
+  const wrap=document.createElement('div'); wrap.className='robot-wrap';
+
+  // Left side (1 less)
+  const left=document.createElement('div'); left.className='robot-side';
+  const li=document.createElement('input'); li.className='robot-blank'; li.id='rb-less';
+  li.type='text'; li.inputMode='numeric'; li.placeholder='?';
+  li.onkeydown=e=>{if(e.key==='Enter')m4Check();};
+  const ll=document.createElement('div'); ll.className='robot-label'; ll.textContent='1 less';
+  left.appendChild(li); left.appendChild(ll);
+
+  // Robot body
+  const body=document.createElement('div'); body.className='robot-body';
+  const em=document.createElement('div'); em.className='robot-emoji'; em.textContent='🤖';
+  const sc=document.createElement('div'); sc.className='robot-screen'; sc.textContent=num;
+  body.appendChild(em); body.appendChild(sc);
+
+  // Right side (1 more)
+  const right=document.createElement('div'); right.className='robot-side';
+  const ri=document.createElement('input'); ri.className='robot-blank'; ri.id='rb-more';
+  ri.type='text'; ri.inputMode='numeric'; ri.placeholder='?';
+  ri.onkeydown=e=>{if(e.key==='Enter')m4Check();};
+  const rl=document.createElement('div'); rl.className='robot-label'; rl.textContent='1 more';
+  right.appendChild(ri); right.appendChild(rl);
+
+  wrap.appendChild(left); wrap.appendChild(body); wrap.appendChild(right);
+  area.appendChild(wrap);
+  document.getElementById('m4-check-btn').style.display='block';
+  setTimeout(()=>li.focus(),60);
+}
+
+// ── Vertical calc ─────────────────────────────────────────────────────────────
+function renderVertical(area, type) {
+  const { a, b } = m4Act;
+  const opSym = type==='addition' ? '+' : '−';
+
+  const wrap=document.createElement('div'); wrap.style.textAlign='center'; wrap.style.marginBottom='12px';
+  const calc=document.createElement('div'); calc.className='vert-calc';
+
+  const r1=document.createElement('div'); r1.className='vc-row';
+  const sp=document.createElement('div'); sp.className='vc-op'; sp.textContent=' ';
+  const n1=document.createElement('div'); n1.className='vc-num'; n1.textContent=a;
+  r1.appendChild(sp); r1.appendChild(n1);
+
+  const r2=document.createElement('div'); r2.className='vc-row';
+  const op=document.createElement('div'); op.className='vc-op'; op.textContent=opSym;
+  const n2=document.createElement('div'); n2.className='vc-num'; n2.textContent=b;
+  r2.appendChild(op); r2.appendChild(n2);
+
+  const line=document.createElement('div'); line.className='vc-line';
+
+  const r3=document.createElement('div'); r3.className='vc-row';
+  const sp2=document.createElement('div'); sp2.className='vc-op'; sp2.textContent=' ';
+  const ans=document.createElement('input'); ans.className='vc-ans'; ans.id='m4-vc-ans';
+  ans.type='text'; ans.inputMode='numeric'; ans.placeholder='?';
+  ans.onkeydown=e=>{if(e.key==='Enter')m4Check();};
+  r3.appendChild(sp2); r3.appendChild(ans);
+
+  calc.appendChild(r1); calc.appendChild(r2); calc.appendChild(line); calc.appendChild(r3);
+  wrap.appendChild(calc); area.appendChild(wrap);
+  document.getElementById('m4-check-btn').style.display='block';
+  setTimeout(()=>ans.focus(),60);
+}
+
+// ── Blocks ────────────────────────────────────────────────────────────────────
+function renderBlocks(area) {
+  const { h, t, o } = m4Act;
+  const title=document.createElement('div'); title.className='pat-label';
+  title.style.marginBottom='10px'; title.textContent='Count the blocks — how many are there?';
+  area.appendChild(title);
+
+  const card=document.createElement('div'); card.className='card m2-card';
+  card.style.height='auto'; card.style.padding='16px';
+  const bw=document.createElement('div'); bw.className='blocks-wrap';
+
+  const row=document.createElement('div'); row.className='blocks-row';
+
+  // Hundreds
+  if(h>0){
+    const g=document.createElement('div'); g.className='block-group';
+    const gr=document.createElement('div'); gr.className='block-grid';
+    for(let i=0;i<h;i++){const b=document.createElement('div');b.className='blk-h';b.textContent='100';gr.appendChild(b);}
+    const l=document.createElement('div'); l.className='block-label'; l.textContent=`${h} hundred${h>1?'s':''}`;
+    g.appendChild(gr); g.appendChild(l); row.appendChild(g);
+  }
+  // Tens
+  if(t>0){
+    const g=document.createElement('div'); g.className='block-group';
+    const gr=document.createElement('div'); gr.className='block-grid';
+    for(let i=0;i<t;i++){const b=document.createElement('div');b.className='blk-t';gr.appendChild(b);}
+    const l=document.createElement('div'); l.className='block-label'; l.textContent=`${t} ten${t>1?'s':''}`;
+    g.appendChild(gr); g.appendChild(l); row.appendChild(g);
+  }
+  // Ones
+  if(o>0){
+    const g=document.createElement('div'); g.className='block-group';
+    const gr=document.createElement('div'); gr.className='block-grid';
+    for(let i=0;i<o;i++){const b=document.createElement('div');b.className='blk-o';gr.appendChild(b);}
+    const l=document.createElement('div'); l.className='block-label'; l.textContent=`${o} one${o>1?'s':''}`;
+    g.appendChild(gr); g.appendChild(l); row.appendChild(g);
+  }
+
+  bw.appendChild(row);
+  const q=document.createElement('div'); q.className='blocks-question';
+  q.innerHTML=`There are <b>___</b> cubes.`;
+  bw.appendChild(q); card.appendChild(bw); area.appendChild(card);
+
+  const inp=document.createElement('input'); inp.className='answer-input'; inp.id='m4-blocks-ans';
+  inp.type='text'; inp.inputMode='numeric'; inp.placeholder='How many cubes?';
+  inp.onkeydown=e=>{if(e.key==='Enter')m4Check();};
+  const w=document.createElement('div'); w.className='input-area'; w.style.marginTop='10px'; w.appendChild(inp);
+  area.appendChild(w);
+  document.getElementById('m4-check-btn').style.display='block';
+  setTimeout(()=>inp.focus(),60);
+}
+
+// ── Check ─────────────────────────────────────────────────────────────────────
+function m4Check() {
+  const card = document.querySelector('#m4-area .card');
+  document.getElementById('m4-check-btn').style.display='none';
+  const { type, answer, answers } = m4Act;
+
+  if (type==='robot') {
+    const li=document.getElementById('rb-less');
+    const ri=document.getElementById('rb-more');
+    const okL=li.value.trim()===answers[0];
+    const okR=ri.value.trim()===answers[1];
+    li.className='robot-blank '+(okL?'correct':'wrong'); li.value=answers[0]; li.disabled=true;
+    ri.className='robot-blank '+(okR?'correct':'wrong'); ri.value=answers[1]; ri.disabled=true;
+    m4Resolve(okL&&okR, card);
+    return;
+  }
+
+  const inpId = type==='addition'||type==='subtraction' ? 'm4-vc-ans' : 'm4-blocks-ans';
+  const inp = document.getElementById(inpId) || document.querySelector('#m4-area input:not([disabled])');
+  if (!inp) return;
+  const ok = inp.value.trim()===answer;
+  inp.className=(inp.className.replace(/correct|wrong/g,'').trim())+' '+(ok?'correct':'wrong');
+  inp.disabled=true;
+  if(!ok) setTimeout(()=>{inp.value=answer;},250);
+  m4Resolve(ok, card);
+}
+
+function m4Resolve(ok, card) {
+  if(card){ card.classList.add(ok?'correct':'wrong');
+    const fi=card.querySelector('.feedback-icon'); if(fi) fi.textContent=ok?'✅':'❌'; }
+  if(ok){ m4Score.correct++; showToast('🎉 Correct!','success'); launchConfetti(); }
+  else  { m4Score.wrong++;   showToast('Check the answer!','error'); }
+  m4Score.done++; m4UpdateScore();
+  if(m4Score.done>=m4Score.total) setTimeout(m4Results,1300);
+  else if(ok) setTimeout(m4Next,900);
+  else document.getElementById('m4-next-btn').style.display='block';
+}
+
+function m4UpdateScore() {
+  document.getElementById('m4-correct').textContent=m4Score.correct;
+  document.getElementById('m4-wrong').textContent=m4Score.wrong;
+  document.getElementById('m4-done').textContent=m4Score.done;
+  document.getElementById('m4-total').textContent=m4Score.total;
+}
+
+function m4Results() {
+  const pct=Math.round(m4Score.correct/m4Score.total*100);
+  const e=pct===100?'🏆':pct>=70?'⭐':'💪';
+  showToast(`${e} Done! ${m4Score.correct}/${m4Score.total} (${pct}%)`,pct>=70?'success':'');
+  setTimeout(m4Init,2500);
 }
 
 // ── Boot ──────────────────────────────────────────────────────────────────────
