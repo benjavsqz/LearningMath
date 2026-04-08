@@ -519,10 +519,160 @@
       border: none; border-radius: 50px; font-size: 0.9rem;
       font-weight: 700; cursor: pointer;
     }
+
+    /* ── Game wrapper ──────────────────────────────────────────────────────── */
+    .game-wrapper {
+      display: flex;
+      align-items: flex-start;
+      gap: 12px;
+      width: 100%;
+      max-width: min(820px, 100%);
+    }
+
+    /* ── Tower Panel ───────────────────────────────────────────────────────── */
+    .tower-panel {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 6px;
+      width: 76px;
+      flex-shrink: 0;
+      position: sticky;
+      top: clamp(10px, 3vw, 40px);
+    }
+
+    .tower-top-label {
+      font-size: 0.58rem;
+      font-weight: 800;
+      color: #7a9ab8;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      text-align: center;
+      line-height: 1.4;
+    }
+
+    .tower-trophy {
+      font-size: 1.6rem;
+      line-height: 1;
+      transition: transform 0.3s;
+    }
+
+    .tower-shaft {
+      width: 68px;
+      height: 280px;
+      background: #f0f6fb;
+      border: 2px solid #dceefa;
+      border-radius: 10px 10px 4px 4px;
+      display: flex;
+      flex-direction: column-reverse;
+      justify-content: flex-start;
+      align-items: center;
+      padding: 4px 4px 10px;
+      gap: 3px;
+      overflow: hidden;
+      position: relative;
+    }
+
+    .tower-shaft-floor {
+      position: absolute;
+      bottom: 0; left: 0; right: 0;
+      height: 10px;
+      background: #1a3a5c;
+      border-radius: 0 0 4px 4px;
+    }
+
+    .tower-block {
+      width: 58px;
+      height: 21px;
+      border-radius: 4px;
+      flex-shrink: 0;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.22), inset 0 1px 0 rgba(255,255,255,0.35);
+      position: relative;
+    }
+
+    .tower-block::before {
+      content: '';
+      position: absolute;
+      top: 3px; left: 7px; right: 7px;
+      height: 3px;
+      background: rgba(255,255,255,0.35);
+      border-radius: 2px;
+    }
+
+    @keyframes blockSlide {
+      0%   { transform: translateY(-24px); opacity: 0; }
+      55%  { transform: translateY(3px);  opacity: 1; }
+      100% { transform: translateY(0); }
+    }
+
+    .tower-block-new {
+      animation: blockSlide 0.32s cubic-bezier(.34,1.56,.64,1) forwards;
+    }
+
+    @keyframes towerCelebrate {
+      0%,100% { transform: translateX(0); }
+      20%     { transform: translateX(-4px); }
+      40%     { transform: translateX(4px); }
+      60%     { transform: translateX(-3px); }
+      80%     { transform: translateX(3px); }
+    }
+
+    .tower-shaft.tower-complete {
+      animation: towerCelebrate 0.5s ease;
+      border-color: #e8a000;
+      background: #fffbeb;
+    }
+
+    .tower-base {
+      background: #1a3a5c;
+      color: white;
+      font-size: 0.72rem;
+      font-weight: 800;
+      padding: 5px 6px;
+      border-radius: 6px;
+      text-align: center;
+      width: 68px;
+    }
+
+    /* Mobile: tower becomes horizontal strip above the app */
+    @media (max-width: 560px) {
+      .game-wrapper { flex-direction: column-reverse; align-items: center; }
+      .tower-panel {
+        width: 100%; max-width: min(700px, 100%);
+        flex-direction: row; align-items: center;
+        position: static; gap: 8px;
+      }
+      .tower-top-label { display: none; }
+      .tower-trophy    { font-size: 1.1rem; }
+      .tower-shaft {
+        flex: 1; height: 32px;
+        flex-direction: row;
+        justify-content: flex-start;
+        align-items: center;
+        padding: 4px; gap: 3px;
+        border-radius: 50px;
+      }
+      .tower-shaft-floor { display: none; }
+      .tower-block { width: 20px; height: 22px; border-radius: 4px; flex-shrink: 0; }
+      .tower-block::before { display: none; }
+      .tower-base { width: auto; padding: 5px 10px; border-radius: 50px; }
+    }
   </style>
 </head>
 <body>
 <canvas id="confetti"></canvas>
+
+<div class="game-wrapper">
+
+<!-- Tower panel -->
+<div class="tower-panel">
+  <div class="tower-top-label">Build<br>your<br>tower!</div>
+  <div class="tower-trophy" id="tower-trophy">🏗️</div>
+  <div class="tower-shaft" id="tower-shaft">
+    <div class="tower-shaft-floor"></div>
+  </div>
+  <div class="tower-base" id="tower-count">0 / 10</div>
+</div>
 
 <div class="app">
 
@@ -809,7 +959,8 @@
 
   </div><!-- end mod4 -->
 
-</div>
+</div><!-- end app -->
+</div><!-- end game-wrapper -->
 
 <div class="toast" id="toast"></div>
 
@@ -1018,6 +1169,7 @@ function checkAnswer() {
   if (result === 'correct') {
     showToast('🎉 Correct!', 'success');
     launchConfetti();
+    addTowerBlock();
     if (index < cards.length - 1) setTimeout(() => navigate(1), 1000);
   } else {
     showToast('The answer is: ' + word, 'error');
@@ -1124,6 +1276,39 @@ function launchConfetti() {
     if (++frame < 80) requestAnimationFrame(draw);
     else ctx.clearRect(0, 0, canvas.width, canvas.height);
   })();
+}
+
+// ── Tower Blox ────────────────────────────────────────────────────────────────
+const TOWER_COLORS = ['#d94040','#e8a000','#2a9d5c','#2a6fa8','#7a4fa8','#f08030','#1a90a0','#c04070'];
+const TOWER_TARGET = 10;
+let towerCount = 0;
+
+function addTowerBlock() {
+  towerCount++;
+  const shaft = document.getElementById('tower-shaft');
+  const block = document.createElement('div');
+  block.className = 'tower-block tower-block-new';
+  block.style.background = TOWER_COLORS[(towerCount - 1) % TOWER_COLORS.length];
+  shaft.appendChild(block);
+  document.getElementById('tower-count').textContent = towerCount + ' / ' + TOWER_TARGET;
+  if (towerCount >= TOWER_TARGET) {
+    document.getElementById('tower-trophy').textContent = '🏆';
+    setTimeout(completeTower, 700);
+  }
+}
+
+function completeTower() {
+  const shaft = document.getElementById('tower-shaft');
+  shaft.classList.add('tower-complete');
+  showToast('🏆 Tower complete! Amazing!', 'success');
+  launchConfetti();
+  setTimeout(() => {
+    towerCount = 0;
+    shaft.querySelectorAll('.tower-block').forEach(b => b.remove());
+    shaft.classList.remove('tower-complete');
+    document.getElementById('tower-count').textContent = '0 / ' + TOWER_TARGET;
+    document.getElementById('tower-trophy').textContent = '🏗️';
+  }, 2200);
 }
 
 // ── Module switcher ───────────────────────────────────────────────────────────
@@ -1329,7 +1514,7 @@ function m2Resolve(isCorrect) {
   card.classList.add(isCorrect ? 'correct' : 'wrong');
   document.getElementById('m2-icon').textContent = isCorrect ? '✅' : '❌';
 
-  if (isCorrect) { m2Score.correct++; showToast('🎉 Correct!', 'success'); launchConfetti(); }
+  if (isCorrect) { m2Score.correct++; showToast('🎉 Correct!', 'success'); launchConfetti(); addTowerBlock(); }
   else           { m2Score.wrong++;   showToast('→ ' + m2Current.answer, 'error'); }
 
   m2Score.done++;
@@ -1808,7 +1993,7 @@ function m3Check() {
 }
 
 function m3Resolve(ok) {
-  if(ok){ m3Score.correct++; showToast('🎉 Correct!','success'); launchConfetti(); }
+  if(ok){ m3Score.correct++; showToast('🎉 Correct!','success'); launchConfetti(); addTowerBlock(); }
   else  { m3Score.wrong++;   showToast('Almost! Check the answers.','error'); }
   m3Score.done++;
   m3UpdateScore();
@@ -2183,7 +2368,7 @@ function m4Check() {
 function m4Resolve(ok, card) {
   if(card){ card.classList.add(ok?'correct':'wrong');
     const fi=card.querySelector('.feedback-icon'); if(fi) fi.textContent=ok?'✅':'❌'; }
-  if(ok){ m4Score.correct++; showToast('🎉 Correct!','success'); launchConfetti(); }
+  if(ok){ m4Score.correct++; showToast('🎉 Correct!','success'); launchConfetti(); addTowerBlock(); }
   else  { m4Score.wrong++;   showToast('Check the answer!','error'); }
   m4Score.done++; m4UpdateScore();
   if(m4Score.done>=m4Score.total) setTimeout(m4Results,1300);
