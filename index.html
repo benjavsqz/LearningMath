@@ -1,0 +1,1733 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Numbers in English</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: 'Segoe UI', system-ui, sans-serif;
+      background: #e8f4fd;
+      min-height: 100vh;
+      display: flex;
+      align-items: flex-start;
+      justify-content: center;
+      padding: clamp(10px, 3vw, 40px);
+    }
+
+    .app {
+      background: white;
+      border-radius: 24px;
+      padding: clamp(16px, 4vw, 36px) clamp(14px, 4vw, 32px);
+      width: 100%;
+      max-width: min(700px, 100%);
+      box-shadow: 0 8px 32px rgba(100,160,220,0.18);
+    }
+
+    /* ── Header ── */
+    .header { text-align: center; margin-bottom: 20px; }
+    .header h1 { font-size: clamp(1.2rem, 4vw, 1.9rem); color: #1a3a5c; font-weight: 800; }
+    .header p  { color: #7a9ab8; font-size: clamp(0.78rem, 2vw, 0.95rem); margin-top: 3px; }
+
+    /* ── Mode toggle ── */
+    .mode-toggle {
+      display: flex; background: #f0f6fb; border-radius: 50px;
+      padding: 4px; margin-bottom: 16px;
+    }
+    .mode-btn {
+      flex: 1; padding: clamp(7px, 1.5vw, 10px); border: none; background: transparent;
+      border-radius: 50px; font-size: clamp(0.75rem, 2.2vw, 0.9rem); font-weight: 600;
+      color: #7a9ab8; cursor: pointer; transition: all 0.2s;
+    }
+    .mode-btn.active { background: white; color: #1a3a5c; box-shadow: 0 2px 8px rgba(100,160,220,0.2); }
+
+    /* ── Difficulty ── */
+    .difficulty { display: flex; gap: 8px; justify-content: center; margin-bottom: 20px; }
+    .diff-btn {
+      padding: clamp(5px, 1.2vw, 9px) clamp(10px, 3vw, 22px); border-radius: 50px; border: 2px solid transparent;
+      font-size: clamp(0.75rem, 2vw, 0.88rem); font-weight: 700; cursor: pointer; transition: all 0.2s;
+    }
+    .diff-btn.easy   { color: #2a9d5c; border-color: #c3f0d8; background: #f0fdf6; }
+    .diff-btn.medium { color: #d48a00; border-color: #fde8a0; background: #fffbeb; }
+    .diff-btn.hard   { color: #d94040; border-color: #fcc8c8; background: #fff5f5; }
+    .diff-btn.easy.active   { background: #2a9d5c; color: white; border-color: #2a9d5c; }
+    .diff-btn.medium.active { background: #e8a000; color: white; border-color: #e8a000; }
+    .diff-btn.hard.active   { background: #d94040; color: white; border-color: #d94040; }
+
+    /* diff subtitle */
+    .diff-subtitle {
+      text-align: center; font-size: 0.75rem; color: #adc8e0;
+      font-weight: 600; margin-top: -12px; margin-bottom: 16px;
+    }
+
+    /* ── Score bar ── */
+    .score-bar {
+      display: flex; justify-content: space-between; align-items: center;
+      background: #f0f6fb; border-radius: 12px; padding: 9px 14px;
+      margin-bottom: 14px; font-size: 0.8rem; font-weight: 600;
+    }
+    .score-correct { color: #2a9d5c; }
+    .score-wrong   { color: #d94040; }
+    .score-total   { color: #7a9ab8; }
+
+    /* ── Card ── */
+    .card {
+      background: white; border: 2px solid #dceefa; border-radius: 20px;
+      height: clamp(155px, 28vw, 230px); display: flex; flex-direction: column;
+      align-items: center; justify-content: center; margin-bottom: 14px;
+      position: relative; transition: border-color 0.3s; user-select: none;
+    }
+    .card.flip-in { animation: flipIn 0.28s ease; }
+    .card.correct { border-color: #2a9d5c; background: #f0fdf6; }
+    .card.wrong   { border-color: #d94040; background: #fff5f5; }
+
+    @keyframes flipIn {
+      0%   { opacity: 0; transform: scale(0.92); }
+      100% { opacity: 1; transform: scale(1); }
+    }
+
+    .card-number { font-size: clamp(2.8rem, 11vw, 5.5rem); font-weight: 800; color: #1a3a5c; line-height: 1; }
+    .card-word   { font-size: clamp(1.1rem, 4vw, 2rem); font-weight: 700; color: #2a6fa8; margin-top: 6px; text-align: center; padding: 0 12px; }
+    .card-sub    { font-size: clamp(0.7rem, 1.8vw, 0.82rem); color: #7a9ab8; margin-top: 5px; font-weight: 500; }
+    .feedback-icon {
+      font-size: 2rem; position: absolute; top: 12px; right: 14px;
+      opacity: 0; transition: opacity 0.3s;
+    }
+    .card.correct .feedback-icon,
+    .card.wrong   .feedback-icon { opacity: 1; }
+
+    /* ── Pronunciation box ── */
+    .pronunciation-box {
+      display: none; background: #f0f8ff; border: 2px solid #c0dff5;
+      border-radius: 16px; padding: 12px 16px; margin-bottom: 12px;
+      animation: slideDown 0.3s ease;
+    }
+    .pronunciation-box.visible { display: block; }
+
+    @keyframes slideDown {
+      0%   { opacity: 0; transform: translateY(-6px); }
+      100% { opacity: 1; transform: translateY(0); }
+    }
+
+    .pron-header {
+      display: flex; align-items: center; justify-content: space-between; margin-bottom: 8px;
+    }
+    .pron-label { font-size: 0.68rem; font-weight: 700; color: #7a9ab8; text-transform: uppercase; letter-spacing: 0.8px; }
+    .pron-lang  { font-size: 0.75rem; color: #2a6fa8; font-weight: 600; }
+
+    .pron-body { display: flex; align-items: center; gap: 12px; }
+
+    .speak-btn {
+      width: 44px; height: 44px; border-radius: 50%; border: none;
+      background: #2a6fa8; color: white; font-size: 1.2rem; cursor: pointer;
+      display: flex; align-items: center; justify-content: center;
+      flex-shrink: 0; transition: background 0.2s, transform 0.15s;
+    }
+    .speak-btn:hover  { background: #1a5a94; transform: scale(1.07); }
+    .speak-btn:active { transform: scale(0.95); }
+    .speak-btn.speaking { background: #2a9d5c; }
+
+    .pron-info { flex: 1; }
+    .pron-word { font-size: clamp(1.05rem, 3.5vw, 1.5rem); font-weight: 700; color: #1a3a5c; line-height: 1.1; }
+    .pron-ipa  { font-size: clamp(0.72rem, 1.8vw, 0.88rem); color: #5a7a9a; margin-top: 2px; font-style: italic; }
+
+    .wave-bars { display: flex; align-items: center; gap: 3px; height: 22px; }
+    .wave-bar  { width: 4px; background: #adc8e0; border-radius: 2px; height: 5px; }
+    .speaking .wave-bar:nth-child(1) { animation: wave 0.7s ease-in-out infinite 0.00s; }
+    .speaking .wave-bar:nth-child(2) { animation: wave 0.7s ease-in-out infinite 0.10s; }
+    .speaking .wave-bar:nth-child(3) { animation: wave 0.7s ease-in-out infinite 0.20s; }
+    .speaking .wave-bar:nth-child(4) { animation: wave 0.7s ease-in-out infinite 0.30s; }
+    .speaking .wave-bar:nth-child(5) { animation: wave 0.7s ease-in-out infinite 0.15s; }
+    @keyframes wave {
+      0%, 100% { height: 4px;  background: #adc8e0; }
+      50%       { height: 20px; background: #2a6fa8; }
+    }
+
+    /* ── Hint toggle button ── */
+    .hint-row { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; }
+    .hint-btn {
+      background: none; border: none; color: #7a9ab8; font-size: 0.8rem;
+      cursor: pointer; display: inline-flex; align-items: center; gap: 4px;
+      padding: 4px 6px; border-radius: 8px; transition: all 0.2s; font-weight: 600;
+    }
+    .hint-btn:hover { color: #2a6fa8; background: #e8f4fd; }
+    .hint-letter { font-size: 0.78rem; color: #e8a000; font-weight: 700; }
+
+    /* ── Reference chart panel ── */
+    .ref-panel {
+      display: none; background: #f8fcff; border: 2px solid #c8e4f8;
+      border-radius: 16px; padding: 14px; margin-bottom: 12px;
+      animation: slideDown 0.3s ease;
+    }
+    .ref-panel.open { display: block; }
+
+    .ref-title {
+      font-size: 0.8rem; font-weight: 800; color: #1a3a5c;
+      text-transform: uppercase; letter-spacing: 0.6px;
+      text-align: center; margin-bottom: 10px;
+    }
+
+    .ref-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 8px; }
+
+    .ref-col {
+      background: white; border-radius: 10px;
+      border: 1.5px solid #dceefa; overflow: hidden;
+    }
+    .ref-col-title {
+      background: #2a6fa8; color: white; font-size: 0.68rem;
+      font-weight: 700; text-align: center; padding: 5px 4px;
+      text-transform: uppercase; letter-spacing: 0.5px;
+    }
+    .ref-col.green  .ref-col-title { background: #2a9d5c; }
+    .ref-col.orange .ref-col-title { background: #e8a000; }
+    .ref-col.red    .ref-col-title { background: #7a4fa8; }
+
+    .ref-row {
+      display: flex; align-items: center;
+      padding: 4px 7px; border-bottom: 1px solid #f0f6fb; gap: 5px;
+    }
+    .ref-row:last-child { border-bottom: none; }
+    .ref-num  { font-size: 0.78rem; font-weight: 800; color: #1a3a5c; min-width: 26px; }
+    .ref-word { font-size: 0.72rem; color: #2a6fa8; font-weight: 600; }
+
+    /* ── Input ── */
+    .input-area { margin-bottom: 12px; }
+    .answer-input {
+      width: 100%; padding: 13px 16px; border: 2px solid #dceefa;
+      border-radius: 14px; font-size: 1rem; color: #1a3a5c; outline: none; transition: border-color 0.2s;
+    }
+    .answer-input::placeholder { color: #adc8e0; }
+    .answer-input:focus   { border-color: #2a6fa8; }
+    .answer-input.correct { border-color: #2a9d5c; background: #f0fdf6; }
+    .answer-input.wrong   { border-color: #d94040; background: #fff5f5; }
+
+    /* ── Check button ── */
+    .check-btn {
+      width: 100%; padding: clamp(11px, 2.5vw, 16px); background: #2a6fa8; color: white;
+      border: none; border-radius: 14px; font-size: clamp(0.9rem, 2.5vw, 1.05rem); font-weight: 700;
+      cursor: pointer; transition: background 0.2s, transform 0.1s; margin-bottom: 18px;
+    }
+    .check-btn:hover   { background: #1a5a94; }
+    .check-btn:active  { transform: scale(0.98); }
+    .check-btn:disabled { background: #b0ccdf; cursor: not-allowed; }
+
+    /* ── Navigation ── */
+    .nav { display: flex; align-items: center; justify-content: center; gap: 14px; }
+    .nav-btn {
+      width: 42px; height: 42px; border-radius: 50%; border: 2px solid #dceefa;
+      background: white; color: #2a6fa8; font-size: 1.1rem; cursor: pointer;
+      transition: all 0.2s; display: flex; align-items: center; justify-content: center;
+    }
+    .nav-btn:hover:not(:disabled) { background: #e8f4fd; border-color: #2a6fa8; }
+    .nav-btn:disabled { color: #c0d8ea; border-color: #e8f0f6; cursor: not-allowed; }
+    .nav-counter { font-size: 0.92rem; font-weight: 600; color: #7a9ab8; min-width: 58px; text-align: center; }
+
+    /* ── Toast ── */
+    .toast {
+      position: fixed; bottom: 24px; left: 50%;
+      transform: translateX(-50%) translateY(60px);
+      background: #1a3a5c; color: white; padding: 11px 22px;
+      border-radius: 50px; font-size: 0.88rem; font-weight: 600;
+      transition: transform 0.3s ease; z-index: 100; white-space: nowrap;
+    }
+    .toast.show    { transform: translateX(-50%) translateY(0); }
+    .toast.success { background: #2a9d5c; }
+    .toast.error   { background: #d94040; }
+
+    /* ── Confetti ── */
+    #confetti { position: fixed; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; z-index: 200; }
+
+    /* ══ MODULE 3: Order & Patterns ══════════════════════════════════════════ */
+
+    /* Number Pattern */
+    .pat-wrap { padding: 10px 0 4px; }
+    .pat-label { text-align:center; font-size:0.78rem; font-weight:700; color:#7a9ab8; text-transform:uppercase; letter-spacing:.6px; margin-bottom:10px; }
+    .pat-seq {
+      display: flex; align-items: center; justify-content: center;
+      flex-wrap: wrap; gap: 6px; padding: 8px 4px;
+    }
+    .pat-num {
+      background: #e8f4fd; border-radius: 10px; padding: 8px 11px;
+      font-size: clamp(1rem, 3.5vw, 1.25rem); font-weight: 800; color: #1a3a5c;
+    }
+    .pat-blank {
+      width: clamp(54px, 14vw, 76px); padding: 7px 4px; text-align: center;
+      border: 2px dashed #adc8e0; border-radius: 10px; background: #f8fcff;
+      font-size: clamp(0.92rem, 3vw, 1.15rem); font-weight: 700; color: #2a6fa8;
+      outline: none; transition: border-color .2s;
+    }
+    .pat-blank:focus  { border-color: #2a6fa8; border-style: solid; }
+    .pat-blank.correct{ border-color: #2a9d5c; border-style:solid; background:#f0fdf6; color:#2a9d5c; }
+    .pat-blank.wrong  { border-color: #d94040; border-style:solid; background:#fff5f5; color:#d94040; }
+    .pat-sep  { color:#adc8e0; font-weight:700; font-size:1rem; }
+    .pat-hint { text-align:center; font-size:0.72rem; color:#adc8e0; font-weight:600; margin-top:6px; }
+
+    /* Order drag */
+    .ord-source {
+      display: flex; gap: 9px; justify-content: center; flex-wrap: wrap;
+      padding: 10px; background: #f0f6fb; border-radius: 14px;
+      border: 2px dashed #c0d8ea; margin-bottom: 16px; min-height: 56px;
+    }
+    .ord-slots-row {
+      display: flex; gap: clamp(8px,2.5vw,14px); justify-content: center;
+      align-items: flex-end; margin-bottom: 6px; flex-wrap: wrap;
+    }
+    .ord-slot-wrap { display: flex; flex-direction: column; align-items: center; gap: 4px; }
+    .ord-slot {
+      width: clamp(70px, 22vw, 105px); height: clamp(50px, 12vw, 66px);
+      border: 2px dashed #adc8e0; border-radius: 12px; background: #f8fcff;
+      display: flex; align-items: center; justify-content: center;
+      font-size: clamp(0.9rem, 2.8vw, 1.15rem); font-weight: 800; color: #1a3a5c;
+      transition: all .2s;
+    }
+    .ord-slot.over    { border-color:#2a6fa8; background:#e8f4fd; border-style:solid; }
+    .ord-slot.filled  { border-style:solid; border-color:#2a6fa8; background:#dff0ff; cursor:pointer; }
+    .ord-slot.correct { border-color:#2a9d5c; background:#f0fdf6; color:#2a9d5c; }
+    .ord-slot.wrong   { border-color:#d94040; background:#fff5f5; color:#d94040; }
+    .ord-label { font-size:0.65rem; color:#adc8e0; font-weight:700; text-transform:uppercase; }
+
+    /* Even / Odd */
+    .eo-source {
+      display: flex; flex-wrap: wrap; gap: 7px; justify-content: center;
+      background: #f8fcff; border: 2px solid #c0dff5; border-radius: 14px;
+      padding: 10px; margin-bottom: 12px; min-height: 48px;
+    }
+    .eo-baskets { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 10px; }
+    .eo-basket {
+      border-radius: 14px; padding: 8px; min-height: 88px;
+      display: flex; flex-direction: column; align-items: center;
+      border: 2px dashed; transition: all .2s;
+    }
+    .eo-basket.odd  { border-color:#e8a000; background:#fffbef; }
+    .eo-basket.even { border-color:#2a6fa8; background:#eef5fd; }
+    .eo-basket.over.odd  { border-style:solid; background:#fff0cc; }
+    .eo-basket.over.even { border-style:solid; background:#d8eafa; }
+    .eo-btitle {
+      font-size: clamp(.72rem,2vw,.88rem); font-weight:800; text-transform:uppercase;
+      letter-spacing:.7px; margin-bottom:6px;
+    }
+    .eo-basket.odd  .eo-btitle { color:#c87800; }
+    .eo-basket.even .eo-btitle { color:#2a6fa8; }
+    .eo-chips { display:flex; flex-wrap:wrap; gap:5px; justify-content:center; }
+
+    /* Draggable chip */
+    .num-chip {
+      padding: clamp(7px,1.8vw,10px) clamp(9px,2.5vw,14px);
+      background: #2a6fa8; color: white; border-radius: 10px;
+      font-size: clamp(.85rem,2.8vw,1.1rem); font-weight:800;
+      cursor:grab; user-select:none; touch-action:none;
+      box-shadow: 0 2px 6px rgba(42,111,168,.3); transition:opacity .15s;
+    }
+    .num-chip.ghost { opacity:.3; cursor:grabbing; }
+    .num-chip.done  { background:#5a90c0; cursor:default; }
+    #drag-clone {
+      position:fixed; z-index:9999; pointer-events:none;
+      transform:scale(1.1) rotate(2deg);
+      box-shadow:0 10px 28px rgba(0,0,0,.22);
+    }
+
+    /* ══ RESPONSIVE BREAKPOINTS ══════════════════════════════════════════════ */
+
+    /* Very small phones (≤ 360px) */
+    @media (max-width: 360px) {
+      .module-bar { border-radius: 10px; }
+      .mod-btn    { font-size: 0.7rem; padding: 8px 3px; }
+      .act-pill   { font-size: 0.7rem; padding: 5px 9px; }
+      .ref-grid   { grid-template-columns: 1fr 1fr; }
+      .score-bar  { font-size: 0.72rem; padding: 7px 10px; }
+      .nav-btn    { width: 36px; height: 36px; font-size: 1rem; }
+    }
+
+    /* Tablet (≥ 600px) */
+    @media (min-width: 600px) {
+      .card         { height: clamp(200px, 28vw, 240px); }
+      .score-bar    { font-size: 0.88rem; padding: 10px 18px; }
+      .answer-input { padding: 14px 18px; font-size: 1.05rem; }
+      .nav-btn      { width: 48px; height: 48px; font-size: 1.2rem; }
+      .nav-counter  { font-size: 1rem; }
+      .m2-question  { font-size: clamp(1.15rem, 3vw, 1.4rem); }
+      .m2-opt-btn   { padding: 13px 18px; }
+    }
+
+    /* Desktop (≥ 900px) */
+    @media (min-width: 900px) {
+      body { align-items: center; min-height: 100vh; padding: 40px; }
+      .app  { padding: 36px 44px; border-radius: 28px; }
+      .card { height: 250px; }
+      .header h1 { font-size: 2rem; }
+      .header p  { font-size: 1rem; }
+      .score-bar { font-size: 0.92rem; }
+      .speak-btn { width: 50px; height: 50px; font-size: 1.3rem; }
+      .m2-question { font-size: 1.45rem; }
+      .m2-num-btn  { min-width: 130px; font-size: 2.6rem; padding: 16px 14px; }
+      .m2-opt-btn  { font-size: 1.05rem; padding: 14px 20px; }
+      .nav-btn     { width: 50px; height: 50px; }
+      .ref-num     { font-size: 0.85rem; }
+      .ref-word    { font-size: 0.8rem; }
+    }
+
+    /* ── Module bar ── */
+    .module-bar {
+      display: flex; background: #1a3a5c; border-radius: 14px;
+      padding: 4px; margin-bottom: 18px; gap: 3px;
+    }
+    .mod-btn {
+      flex: 1; padding: 10px 6px; border: none; border-radius: 10px;
+      font-size: 0.8rem; font-weight: 700; cursor: pointer;
+      color: rgba(255,255,255,0.5); background: transparent; transition: all 0.2s;
+    }
+    .mod-btn.active { background: white; color: #1a3a5c; }
+
+    /* ── Module 2: activity type pills ── */
+    .act-type-bar {
+      display: flex; gap: 7px; justify-content: center; margin-bottom: 14px; flex-wrap: wrap;
+    }
+    .act-pill {
+      padding: 6px 14px; border-radius: 50px; font-size: 0.78rem;
+      font-weight: 700; cursor: pointer; transition: all 0.2s;
+      background: #f0f6fb; color: #7a9ab8; border: 2px solid transparent;
+    }
+    .act-pill.active { background: #2a6fa8; color: white; }
+
+    /* ── Module 2: question card ── */
+    .m2-card { height: auto !important; min-height: 120px; padding: 22px 18px; }
+    .m2-question {
+      font-size: 1.1rem; font-weight: 700; color: #1a3a5c;
+      text-align: center; line-height: 1.6;
+    }
+    .m2-question b { color: #2a6fa8; }
+
+    /* ── Module 2: number buttons (compare) ── */
+    .m2-numbers { display: flex; gap: clamp(10px, 3vw, 24px); justify-content: center; margin-bottom: 12px; }
+    .m2-num-btn {
+      min-width: clamp(70px, 22vw, 130px); padding: clamp(10px, 2vw, 16px) clamp(8px, 2vw, 14px); border-radius: 16px;
+      border: 2px solid #dceefa; background: white;
+      font-size: clamp(1.4rem, 5.5vw, 2.6rem); font-weight: 800; color: #1a3a5c;
+      cursor: pointer; transition: all 0.18s;
+    }
+    .m2-num-btn:hover:not(:disabled) { border-color: #2a6fa8; background: #e8f4fd; transform: scale(1.04); }
+    .m2-num-btn:disabled { cursor: not-allowed; }
+    .m2-num-btn.sel-correct { border-color: #2a9d5c; background: #f0fdf6; color: #2a9d5c; }
+    .m2-num-btn.sel-wrong   { border-color: #d94040; background: #fff5f5; color: #d94040; }
+    .m2-num-btn.show-correct { border-color: #2a9d5c; background: #f0fdf6; }
+
+    /* ── Module 2: text option buttons ── */
+    .m2-text-options { display: flex; flex-direction: column; gap: 8px; margin-bottom: 12px; }
+    .m2-opt-btn {
+      padding: clamp(10px, 2.5vw, 14px) clamp(12px, 3vw, 18px); border-radius: 12px; border: 2px solid #dceefa;
+      background: white; font-size: clamp(0.85rem, 2.5vw, 1rem); font-weight: 600; color: #1a3a5c;
+      cursor: pointer; transition: all 0.18s; text-align: left;
+    }
+    .m2-opt-btn:hover:not(:disabled) { border-color: #2a6fa8; background: #e8f4fd; }
+    .m2-opt-btn:disabled { cursor: not-allowed; }
+    .m2-opt-btn.sel-correct { border-color: #2a9d5c; background: #f0fdf6; color: #2a9d5c; }
+    .m2-opt-btn.sel-wrong   { border-color: #d94040; background: #fff5f5; color: #d94040; }
+    .m2-opt-btn.show-correct { border-color: #2a9d5c; background: #f0fdf6; }
+
+    /* ── Module 2: next button ── */
+    .next-btn {
+      width: 100%; padding: clamp(11px, 2.5vw, 16px); background: #2a9d5c; color: white;
+      border: none; border-radius: 14px; font-size: clamp(0.9rem, 2.5vw, 1.05rem); font-weight: 700;
+      cursor: pointer; transition: background 0.2s; margin-bottom: 8px;
+    }
+    .next-btn:hover { background: #1e8050; }
+
+    /* ── Module 2: restart button ── */
+    .restart-box {
+      text-align: center; padding: 16px; background: #f0f6fb;
+      border-radius: 16px; margin-top: 8px;
+    }
+    .restart-box p { font-size: 1rem; font-weight: 700; color: #1a3a5c; margin-bottom: 10px; }
+    .restart-btn {
+      padding: 10px 24px; background: #2a6fa8; color: white;
+      border: none; border-radius: 50px; font-size: 0.9rem;
+      font-weight: 700; cursor: pointer;
+    }
+  </style>
+</head>
+<body>
+<canvas id="confetti"></canvas>
+
+<div class="app">
+
+  <!-- Module selector -->
+  <div class="module-bar">
+    <button class="mod-btn active" id="mod-btn-1" onclick="setModule(1)">🔢 Words</button>
+    <button class="mod-btn"        id="mod-btn-2" onclick="setModule(2)">⚖️ Compare</button>
+    <button class="mod-btn"        id="mod-btn-3" onclick="setModule(3)">🎮 Order</button>
+  </div>
+
+  <!-- ═══ MODULE 1: Number Words ═══ -->
+  <div id="mod1">
+  <div class="header">
+    <h1>🔢 Numbers in English</h1>
+    <p>Learn to write numbers in English!</p>
+  </div>
+
+  <!-- Mode toggle -->
+  <div class="mode-toggle">
+    <button class="mode-btn active" id="btn-study" onclick="setMode('study')">📖 Study Mode</button>
+    <button class="mode-btn"        id="btn-quiz"  onclick="setMode('quiz')">✏️ Quiz Mode</button>
+  </div>
+
+  <!-- Difficulty -->
+  <div class="difficulty">
+    <button class="diff-btn easy active"  onclick="setDifficulty('easy')">Easy</button>
+    <button class="diff-btn medium"       onclick="setDifficulty('medium')">Medium</button>
+    <button class="diff-btn hard"         onclick="setDifficulty('hard')">Hard</button>
+  </div>
+  <div class="diff-subtitle" id="diff-subtitle">Numbers 1 – 20</div>
+
+  <!-- Score bar (quiz only) -->
+  <div class="score-bar" id="score-bar" style="display:none">
+    <span class="score-correct">✓ <span id="sc-correct">0</span> correct</span>
+    <span class="score-total"><span id="sc-done">0</span> / <span id="sc-total">0</span> done</span>
+    <span class="score-wrong">✗ <span id="sc-wrong">0</span> wrong</span>
+  </div>
+
+  <!-- Card -->
+  <div class="card" id="card">
+    <div class="feedback-icon" id="feedback-icon"></div>
+    <div class="card-number" id="card-number"></div>
+    <div class="card-word"   id="card-word" style="display:none"></div>
+    <div class="card-sub"    id="card-sub"></div>
+  </div>
+
+  <!-- Pronunciation box -->
+  <div class="pronunciation-box" id="pron-box">
+    <div class="pron-header">
+      <span class="pron-label">Pronunciation</span>
+      <span class="pron-lang">🇺🇸 English (US)</span>
+    </div>
+    <div class="pron-body">
+      <button class="speak-btn" id="speak-btn" onclick="speak()" title="Listen">🔊</button>
+      <div class="pron-info">
+        <div class="pron-word" id="pron-word"></div>
+        <div class="pron-ipa"  id="pron-ipa"></div>
+      </div>
+      <div class="wave-bars" id="wave-bars">
+        <div class="wave-bar"></div>
+        <div class="wave-bar"></div>
+        <div class="wave-bar"></div>
+        <div class="wave-bar"></div>
+        <div class="wave-bar"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Hint row (quiz only) -->
+  <div class="hint-row" id="hint-row" style="display:none">
+    <button class="hint-btn" onclick="toggleRef()">📋 Number chart</button>
+    <span class="hint-letter" id="hint-letter"></span>
+  </div>
+
+  <!-- Reference chart panel -->
+  <div class="ref-panel" id="ref-panel">
+    <div class="ref-title">📖 Number Words Reference</div>
+    <div class="ref-grid">
+
+      <!-- Col 1: 1-10 -->
+      <div class="ref-col green">
+        <div class="ref-col-title">1 – 10</div>
+        <div class="ref-row"><span class="ref-num">1</span><span class="ref-word">one</span></div>
+        <div class="ref-row"><span class="ref-num">2</span><span class="ref-word">two</span></div>
+        <div class="ref-row"><span class="ref-num">3</span><span class="ref-word">three</span></div>
+        <div class="ref-row"><span class="ref-num">4</span><span class="ref-word">four</span></div>
+        <div class="ref-row"><span class="ref-num">5</span><span class="ref-word">five</span></div>
+        <div class="ref-row"><span class="ref-num">6</span><span class="ref-word">six</span></div>
+        <div class="ref-row"><span class="ref-num">7</span><span class="ref-word">seven</span></div>
+        <div class="ref-row"><span class="ref-num">8</span><span class="ref-word">eight</span></div>
+        <div class="ref-row"><span class="ref-num">9</span><span class="ref-word">nine</span></div>
+        <div class="ref-row"><span class="ref-num">10</span><span class="ref-word">ten</span></div>
+      </div>
+
+      <!-- Col 2: 11-20 -->
+      <div class="ref-col green">
+        <div class="ref-col-title">11 – 20</div>
+        <div class="ref-row"><span class="ref-num">11</span><span class="ref-word">eleven</span></div>
+        <div class="ref-row"><span class="ref-num">12</span><span class="ref-word">twelve</span></div>
+        <div class="ref-row"><span class="ref-num">13</span><span class="ref-word">thirteen</span></div>
+        <div class="ref-row"><span class="ref-num">14</span><span class="ref-word">fourteen</span></div>
+        <div class="ref-row"><span class="ref-num">15</span><span class="ref-word">fifteen</span></div>
+        <div class="ref-row"><span class="ref-num">16</span><span class="ref-word">sixteen</span></div>
+        <div class="ref-row"><span class="ref-num">17</span><span class="ref-word">seventeen</span></div>
+        <div class="ref-row"><span class="ref-num">18</span><span class="ref-word">eighteen</span></div>
+        <div class="ref-row"><span class="ref-num">19</span><span class="ref-word">nineteen</span></div>
+        <div class="ref-row"><span class="ref-num">20</span><span class="ref-word">twenty</span></div>
+      </div>
+
+      <!-- Col 3: tens -->
+      <div class="ref-col orange">
+        <div class="ref-col-title">Tens</div>
+        <div class="ref-row"><span class="ref-num">20</span><span class="ref-word">twenty</span></div>
+        <div class="ref-row"><span class="ref-num">30</span><span class="ref-word">thirty</span></div>
+        <div class="ref-row"><span class="ref-num">40</span><span class="ref-word">forty</span></div>
+        <div class="ref-row"><span class="ref-num">50</span><span class="ref-word">fifty</span></div>
+        <div class="ref-row"><span class="ref-num">60</span><span class="ref-word">sixty</span></div>
+        <div class="ref-row"><span class="ref-num">70</span><span class="ref-word">seventy</span></div>
+        <div class="ref-row"><span class="ref-num">80</span><span class="ref-word">eighty</span></div>
+        <div class="ref-row"><span class="ref-num">90</span><span class="ref-word">ninety</span></div>
+      </div>
+
+    </div>
+
+    <!-- Hundreds & Thousands row -->
+    <div style="display:grid; grid-template-columns:1fr 1fr; gap:8px; margin-top:8px;">
+
+      <!-- Hundreds -->
+      <div class="ref-col red">
+        <div class="ref-col-title">Hundreds</div>
+        <div class="ref-row"><span class="ref-num">100</span><span class="ref-word">one hundred</span></div>
+        <div class="ref-row"><span class="ref-num">200</span><span class="ref-word">two hundred</span></div>
+        <div class="ref-row"><span class="ref-num">300</span><span class="ref-word">three hundred</span></div>
+        <div class="ref-row"><span class="ref-num">400</span><span class="ref-word">four hundred</span></div>
+        <div class="ref-row"><span class="ref-num">500</span><span class="ref-word">five hundred</span></div>
+        <div class="ref-row"><span class="ref-num">600</span><span class="ref-word">six hundred</span></div>
+        <div class="ref-row"><span class="ref-num">700</span><span class="ref-word">seven hundred</span></div>
+        <div class="ref-row"><span class="ref-num">800</span><span class="ref-word">eight hundred</span></div>
+        <div class="ref-row"><span class="ref-num">900</span><span class="ref-word">nine hundred</span></div>
+      </div>
+
+      <!-- Thousands -->
+      <div class="ref-col red">
+        <div class="ref-col-title">Thousands</div>
+        <div class="ref-row"><span class="ref-num">1,000</span><span class="ref-word">one thousand</span></div>
+        <div class="ref-row"><span class="ref-num">2,000</span><span class="ref-word">two thousand</span></div>
+        <div class="ref-row"><span class="ref-num">3,000</span><span class="ref-word">three thousand</span></div>
+        <div class="ref-row"><span class="ref-num">4,000</span><span class="ref-word">four thousand</span></div>
+        <div class="ref-row"><span class="ref-num">5,000</span><span class="ref-word">five thousand</span></div>
+        <div class="ref-row"><span class="ref-num">6,000</span><span class="ref-word">six thousand</span></div>
+        <div class="ref-row"><span class="ref-num">7,000</span><span class="ref-word">seven thousand</span></div>
+        <div class="ref-row"><span class="ref-num">8,000</span><span class="ref-word">eight thousand</span></div>
+        <div class="ref-row"><span class="ref-num">9,000</span><span class="ref-word">nine thousand</span></div>
+      </div>
+
+    </div>
+
+    <!-- Compound rule tip -->
+    <div style="margin-top:10px; background:#fffbeb; border:1.5px solid #fde8a0; border-radius:10px; padding:8px 10px;">
+      <div style="font-size:0.7rem; font-weight:800; color:#d48a00; margin-bottom:5px;">💡 HOW TO COMBINE</div>
+      <div style="font-size:0.68rem; color:#7a5a00; line-height:1.8;">
+        <b>21–99:</b> &nbsp;forty<b>-</b>five, ninety<b>-</b>nine<br>
+        <b>100s:</b> &nbsp;&nbsp;five hundred <b>and</b> thirty-four<br>
+        <b>1000s:</b> &nbsp;four thousand five hundred <b>and</b> ten<br>
+        <b>1000s:</b> &nbsp;three thousand <b>and</b> twenty-five
+      </div>
+    </div>
+  </div>
+
+  <!-- Input (quiz) -->
+  <div class="input-area" id="input-area" style="display:none">
+    <input class="answer-input" id="answer-input" type="text"
+      placeholder="Type the number in English..."
+      autocomplete="off" spellcheck="false" onkeydown="handleKey(event)" />
+  </div>
+
+  <!-- Check button (quiz) -->
+  <button class="check-btn" id="check-btn" onclick="checkAnswer()" style="display:none">Check Answer</button>
+
+  <!-- Navigation -->
+  <div class="nav">
+    <button class="nav-btn" id="prev-btn" onclick="navigate(-1)">&#8592;</button>
+    <div class="nav-counter" id="nav-counter">1 / 20</div>
+    <button class="nav-btn" id="next-btn" onclick="navigate(1)">&#8594;</button>
+  </div>
+  </div><!-- end mod1 -->
+
+  <!-- ═══ MODULE 2: Compare & Place Value ═══ -->
+  <div id="mod2" style="display:none">
+
+    <div class="header">
+      <h1>⚖️ Compare &amp; Place Value</h1>
+      <p>Practice comparing numbers and place value!</p>
+    </div>
+
+    <!-- Activity type pills -->
+    <div class="act-type-bar">
+      <span class="act-pill active" id="pill-mix"     onclick="setActType('mix')">🎲 Mix</span>
+      <span class="act-pill"        id="pill-compare"  onclick="setActType('compare')">⚖️ Compare</span>
+      <span class="act-pill"        id="pill-fill"     onclick="setActType('fill')">✏️ Greater/Smaller than</span>
+      <span class="act-pill"        id="pill-place"    onclick="setActType('place')">📍 Place Value</span>
+    </div>
+
+    <!-- Score bar -->
+    <div class="score-bar">
+      <span class="score-correct">✓ <span id="m2-correct">0</span> correct</span>
+      <span class="score-total"><span id="m2-done">0</span> / <span id="m2-total">10</span></span>
+      <span class="score-wrong">✗ <span id="m2-wrong">0</span> wrong</span>
+    </div>
+
+    <!-- Question card -->
+    <div class="card m2-card" id="m2-card">
+      <div class="feedback-icon" id="m2-icon"></div>
+      <div class="m2-question"   id="m2-question"></div>
+    </div>
+
+    <!-- Answer area -->
+    <div id="m2-answer-area"></div>
+
+    <!-- Check button (hard mode only) -->
+    <button class="check-btn" id="m2-check-btn" onclick="m2Check()" style="display:none">Check Answer</button>
+
+    <!-- Next button (after wrong answer) -->
+    <button class="next-btn"  id="m2-next-btn"  onclick="m2Next()"  style="display:none">Next →</button>
+
+  </div><!-- end mod2 -->
+
+  <!-- ═══ MODULE 3: Order & Patterns ═══ -->
+  <div id="mod3" style="display:none">
+
+    <div class="header">
+      <h1>🎮 Order &amp; Patterns</h1>
+      <p>Patterns, ordering numbers, and even/odd!</p>
+    </div>
+
+    <div class="act-type-bar">
+      <span class="act-pill active" id="m3-pill-mix"     onclick="m3SetType('mix')">🎲 Mix</span>
+      <span class="act-pill"        id="m3-pill-pattern"  onclick="m3SetType('pattern')">📈 Patterns</span>
+      <span class="act-pill"        id="m3-pill-order"    onclick="m3SetType('order')">📊 Order</span>
+      <span class="act-pill"        id="m3-pill-evenodd"  onclick="m3SetType('evenodd')">⚡ Even/Odd</span>
+    </div>
+
+    <div class="score-bar">
+      <span class="score-correct">✓ <span id="m3-correct">0</span> correct</span>
+      <span class="score-total"><span id="m3-done">0</span> / <span id="m3-total">8</span></span>
+      <span class="score-wrong">✗ <span id="m3-wrong">0</span> wrong</span>
+    </div>
+
+    <div id="m3-area"></div>
+
+    <button class="check-btn" id="m3-check-btn" onclick="m3Check()" style="display:none">Check Answer</button>
+    <button class="next-btn"  id="m3-next-btn"  onclick="m3Next()"  style="display:none">Next →</button>
+
+  </div><!-- end mod3 -->
+
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+// ── Number → English ──────────────────────────────────────────────────────────
+const ONES = ['','one','two','three','four','five','six','seven','eight','nine',
+              'ten','eleven','twelve','thirteen','fourteen','fifteen','sixteen',
+              'seventeen','eighteen','nineteen'];
+const TENS = ['','','twenty','thirty','forty','fifty','sixty','seventy','eighty','ninety'];
+
+function n2w(n) {
+  if (n >= 1000) {
+    const th   = Math.floor(n / 1000);
+    const rest = n % 1000;
+    if (rest === 0)        return n2w(th) + ' thousand';
+    if (rest < 100)        return n2w(th) + ' thousand and ' + n2w(rest);
+    return n2w(th) + ' thousand ' + n2w(rest);
+  }
+  if (n >= 100) {
+    const h = Math.floor(n / 100), r = n % 100;
+    return r === 0 ? ONES[h] + ' hundred' : ONES[h] + ' hundred and ' + n2w(r);
+  }
+  if (n >= 20) {
+    const t = Math.floor(n / 10), o = n % 10;
+    return o === 0 ? TENS[t] : TENS[t] + '-' + ONES[o];
+  }
+  return ONES[n];
+}
+
+// ── IPA for base words ────────────────────────────────────────────────────────
+const IPA = {
+  'one':'wʌn','two':'tuː','three':'θriː','four':'fɔːr','five':'faɪv',
+  'six':'sɪks','seven':'ˈsɛvən','eight':'eɪt','nine':'naɪn','ten':'tɛn',
+  'eleven':'ɪˈlɛvən','twelve':'twɛlv','thirteen':'θɜːrˈtiːn','fourteen':'fɔːrˈtiːn',
+  'fifteen':'fɪfˈtiːn','sixteen':'sɪksˈtiːn','seventeen':'ˌsɛvənˈtiːn',
+  'eighteen':'eɪˈtiːn','nineteen':'naɪnˈtiːn','twenty':'ˈtwɛnti',
+  'thirty':'ˈθɜːrti','forty':'ˈfɔːrti','fifty':'ˈfɪfti','sixty':'ˈsɪksti',
+  'seventy':'ˈsɛvənti','eighty':'ˈeɪti','ninety':'ˈnaɪnti',
+  'one hundred':'wʌn ˈhʌndrəd','one thousand':'wʌn ˈθaʊzənd'
+};
+function getIPA(word) { return IPA[word] ? '/' + IPA[word] + '/' : ''; }
+
+// ── Card sets ─────────────────────────────────────────────────────────────────
+const SETS = {
+  // Level 1 — all base words from the worksheet: 1–20, tens, 100, 1000
+  easy: [
+    1, 2, 3, 4, 5, 6, 7, 8, 9, 10,           // one – ten
+    11, 12, 13, 14, 15, 16, 17, 18, 19, 20,  // eleven – twenty
+    30, 40, 50, 60, 70, 80, 90,              // thirty – ninety
+    100, 1000                                 // one hundred, one thousand
+  ],
+
+  // Level 2 — 2-digit compounds + compound hundreds
+  medium: [
+    21, 25, 28, 32, 36, 43, 47, 54,          // 2-digit compounds
+    58, 61, 65, 72, 76, 83, 89, 94, 99,      // more compounds
+    200, 300, 400, 500, 600, 700, 800, 900,  // round hundreds
+    115, 234, 347, 456, 534, 578, 683, 692, 815, 963  // compound hundreds
+  ],
+
+  // Level 3 — compound thousands up to 9,999
+  hard: [
+    101, 112, 230, 345, 467, 496, 619, 720, 843, 968,
+    // Round thousands
+    2000, 3000, 4000, 5000, 6000, 7000, 8000, 9000,
+    // Compound thousands
+    1200, 1450, 2310, 2750, 3025, 3680, 4510, 4999,
+    5100, 5432, 6070, 6815, 7300, 7654, 8090, 8423, 9500, 9999
+  ]
+};
+
+const SUBTITLES = {
+  easy:   '1–20, tens (30–90), 100 & 1,000  •  Base words',
+  medium: 'Compound numbers 21–999  •  Tens & hundreds',
+  hard:   'Numbers 1,000 – 9,999  •  Thousands'
+};
+
+// ── State ─────────────────────────────────────────────────────────────────────
+let mode = 'study', difficulty = 'easy';
+let cards = [], index = 0, answered = {}, scoreC = 0, scoreW = 0;
+let currentWord = '';
+
+// ── Init ──────────────────────────────────────────────────────────────────────
+function init() {
+  cards    = difficulty === 'easy' ? [...SETS[difficulty]] : shuffle([...SETS[difficulty]]);
+  index    = 0; answered = {}; scoreC = 0; scoreW = 0;
+  document.getElementById('diff-subtitle').textContent = SUBTITLES[difficulty];
+  render();
+}
+
+function shuffle(a) {
+  for (let i = a.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [a[i], a[j]] = [a[j], a[i]];
+  }
+  return a;
+}
+
+// ── Mode / Difficulty ─────────────────────────────────────────────────────────
+function setMode(m) {
+  mode = m;
+  document.getElementById('btn-study').classList.toggle('active', m === 'study');
+  document.getElementById('btn-quiz').classList.toggle('active',  m === 'quiz');
+  closeRef();
+  init();
+}
+
+function setDifficulty(d) {
+  difficulty = d;
+  document.querySelectorAll('.diff-btn').forEach(b => b.classList.remove('active'));
+  document.querySelector('.diff-btn.' + d).classList.add('active');
+  closeRef();
+  init();
+}
+
+// ── Render ────────────────────────────────────────────────────────────────────
+function render() {
+  const num  = cards[index];
+  const word = n2w(num);
+
+  const card = document.getElementById('card');
+  card.classList.remove('flip-in','correct','wrong');
+  void card.offsetWidth;
+  card.classList.add('flip-in');
+
+  hidePronunciation();
+  document.getElementById('card-number').textContent   = num.toLocaleString();
+  document.getElementById('card-word').style.display   = 'none';
+  document.getElementById('feedback-icon').textContent = '';
+  document.getElementById('hint-letter').textContent   = '';
+
+  document.getElementById('nav-counter').textContent = (index + 1) + ' / ' + cards.length;
+  document.getElementById('prev-btn').disabled = index === 0;
+  document.getElementById('next-btn').disabled = index === cards.length - 1;
+
+  const isStudy = mode === 'study';
+  document.getElementById('input-area').style.display  = isStudy ? 'none'  : 'block';
+  document.getElementById('check-btn').style.display   = isStudy ? 'none'  : 'block';
+  document.getElementById('hint-row').style.display    = isStudy ? 'none'  : 'flex';
+  document.getElementById('score-bar').style.display   = isStudy ? 'none'  : 'flex';
+
+  if (isStudy) {
+    document.getElementById('card-word').style.display = 'block';
+    document.getElementById('card-word').textContent   = word;
+    document.getElementById('card-sub').textContent    = 'Read and remember!';
+    showPronunciation(word);
+  } else {
+    document.getElementById('card-sub').textContent = '';
+    const inp = document.getElementById('answer-input');
+    if (answered[index]) {
+      restoreAnswerUI(answered[index], word, inp.dataset.userval || '');
+    } else {
+      inp.value = ''; inp.className = 'answer-input';
+      inp.dataset.userval = '';
+      document.getElementById('check-btn').disabled = false;
+    }
+    updateScore();
+  }
+}
+
+function restoreAnswerUI(result, word, userval) {
+  const card = document.getElementById('card');
+  const inp  = document.getElementById('answer-input');
+  card.classList.add(result);
+  inp.className = 'answer-input ' + result;
+  inp.value = result === 'correct' ? word : userval;
+  document.getElementById('feedback-icon').textContent = result === 'correct' ? '✅' : '❌';
+  document.getElementById('check-btn').disabled = true;
+  if (result === 'wrong') document.getElementById('hint-letter').textContent = '→ ' + word;
+  showPronunciation(word);
+}
+
+function updateScore() {
+  const done = Object.keys(answered).length;
+  document.getElementById('sc-correct').textContent = scoreC;
+  document.getElementById('sc-wrong').textContent   = scoreW;
+  document.getElementById('sc-done').textContent    = done;
+  document.getElementById('sc-total').textContent   = cards.length;
+}
+
+// ── Quiz ──────────────────────────────────────────────────────────────────────
+function checkAnswer() {
+  if (answered[index]) return;
+  const inp    = document.getElementById('answer-input');
+  const word   = n2w(cards[index]);
+  const raw    = inp.value.trim().toLowerCase().replace(/\s+/g,' ');
+  // Accept with or without hyphens/spaces in compound numbers
+  const normalize = s => s.replace(/-/g,' ');
+  const result = normalize(raw) === normalize(word) ? 'correct' : 'wrong';
+
+  inp.dataset.userval = inp.value;
+  answered[index] = result;
+  if (result === 'correct') scoreC++; else scoreW++;
+
+  const card = document.getElementById('card');
+  card.classList.add(result);
+  inp.className = 'answer-input ' + result;
+  if (result === 'correct') inp.value = word;
+  document.getElementById('feedback-icon').textContent = result === 'correct' ? '✅' : '❌';
+  document.getElementById('check-btn').disabled = true;
+  if (result === 'wrong') document.getElementById('hint-letter').textContent = '→ ' + word;
+
+  showPronunciation(word);
+  updateScore();
+
+  if (result === 'correct') {
+    showToast('🎉 Correct!', 'success');
+    launchConfetti();
+    if (index < cards.length - 1) setTimeout(() => navigate(1), 1000);
+  } else {
+    showToast('The answer is: ' + word, 'error');
+  }
+
+  if (Object.keys(answered).length === cards.length) setTimeout(showResults, 1500);
+}
+
+function handleKey(e) { if (e.key === 'Enter') checkAnswer(); }
+
+// ── Reference chart toggle ────────────────────────────────────────────────────
+function toggleRef() {
+  document.getElementById('ref-panel').classList.toggle('open');
+}
+function closeRef() {
+  document.getElementById('ref-panel').classList.remove('open');
+}
+
+// ── Pronunciation ─────────────────────────────────────────────────────────────
+function showPronunciation(word) {
+  currentWord = word;
+  const display = word.charAt(0).toUpperCase() + word.slice(1);
+  document.getElementById('pron-word').textContent = display;
+  document.getElementById('pron-ipa').textContent  = getIPA(word);
+  document.getElementById('pron-box').classList.add('visible');
+  speak();
+}
+
+function hidePronunciation() {
+  window.speechSynthesis && window.speechSynthesis.cancel();
+  document.getElementById('pron-box').classList.remove('visible');
+  stopWave();
+}
+
+function speak() {
+  if (!window.speechSynthesis) return;
+  window.speechSynthesis.cancel();
+  const word = currentWord || n2w(cards[index]);
+  const utt  = new SpeechSynthesisUtterance(word);
+  utt.lang  = 'en-US'; utt.rate = 0.82; utt.pitch = 1;
+  const voices = window.speechSynthesis.getVoices();
+  const eng = voices.find(v => v.lang === 'en-US' && v.localService)
+           || voices.find(v => v.lang.startsWith('en'));
+  if (eng) utt.voice = eng;
+  utt.onstart = startWave;
+  utt.onend   = stopWave;
+  utt.onerror = stopWave;
+  window.speechSynthesis.speak(utt);
+}
+
+function startWave() {
+  document.getElementById('speak-btn').classList.add('speaking');
+  document.getElementById('wave-bars').classList.add('speaking');
+}
+function stopWave() {
+  document.getElementById('speak-btn').classList.remove('speaking');
+  document.getElementById('wave-bars').classList.remove('speaking');
+}
+
+// ── Navigate ──────────────────────────────────────────────────────────────────
+function navigate(dir) {
+  const next = index + dir;
+  if (next < 0 || next >= cards.length) return;
+  index = next;
+  render();
+}
+
+// ── Results ───────────────────────────────────────────────────────────────────
+function showResults() {
+  const pct   = Math.round((scoreC / cards.length) * 100);
+  const emoji = pct === 100 ? '🏆' : pct >= 70 ? '⭐' : '💪';
+  showToast(emoji + ' Done! ' + scoreC + '/' + cards.length + ' correct (' + pct + '%)', pct >= 70 ? 'success' : '');
+}
+
+// ── Toast ─────────────────────────────────────────────────────────────────────
+let toastTimer;
+function showToast(msg, type) {
+  const t = document.getElementById('toast');
+  t.textContent = msg; t.className = 'toast ' + (type || '') + ' show';
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(() => t.classList.remove('show'), 2400);
+}
+
+// ── Confetti ──────────────────────────────────────────────────────────────────
+function launchConfetti() {
+  const canvas = document.getElementById('confetti');
+  const ctx    = canvas.getContext('2d');
+  canvas.width = window.innerWidth; canvas.height = window.innerHeight;
+  const colors = ['#2a6fa8','#2a9d5c','#e8a000','#d94040','#7a4fa8','#f08030'];
+  const pieces = Array.from({length: 55}, () => ({
+    x: Math.random() * canvas.width, y: -10,
+    r: Math.random() * 7 + 3, d: Math.random() * 2 + 1,
+    color: colors[Math.floor(Math.random() * colors.length)],
+    tilt: 0, tiltAngle: 0
+  }));
+  let frame = 0;
+  (function draw() {
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    pieces.forEach(p => {
+      p.tiltAngle += 0.1; p.y += p.d; p.tilt = Math.sin(p.tiltAngle) * 8;
+      ctx.beginPath(); ctx.arc(p.x + p.tilt, p.y, p.r, 0, 2 * Math.PI);
+      ctx.fillStyle = p.color; ctx.fill();
+    });
+    if (++frame < 80) requestAnimationFrame(draw);
+    else ctx.clearRect(0, 0, canvas.width, canvas.height);
+  })();
+}
+
+// ── Module switcher ───────────────────────────────────────────────────────────
+function setModule(n) {
+  [1,2,3].forEach(i => {
+    document.getElementById('mod-btn-'+i).classList.toggle('active', i === n);
+    document.getElementById('mod'+i).style.display = i === n ? '' : 'none';
+  });
+  if (n === 2) m2Init();
+  if (n === 3) m3Init();
+}
+
+// ── Module 2 state ────────────────────────────────────────────────────────────
+let m2ActType  = 'mix';
+let m2Current  = null;
+let m2Answered = false;
+let m2Score    = { correct: 0, wrong: 0, done: 0, total: 10 };
+
+function setActType(t) {
+  m2ActType = t;
+  document.querySelectorAll('.act-pill').forEach(p => p.classList.remove('active'));
+  document.getElementById('pill-' + t).classList.add('active');
+  m2Init();
+}
+
+function m2Init() {
+  m2Score    = { correct: 0, wrong: 0, done: 0, total: 10 };
+  m2Answered = false;
+  m2UpdateScore();
+  m2Next();
+}
+
+// ── Activity generator ────────────────────────────────────────────────────────
+function m2RandInt(min, max) { return Math.floor(Math.random() * (max - min + 1)) + min; }
+
+function m2TwoDiff(min, max) {
+  let a = m2RandInt(min, max), b;
+  do { b = m2RandInt(min, max); } while (b === a);
+  return [a, b];
+}
+
+function m2GenActivity() {
+  const allTypes = {
+    mix:     ['compare', 'fill', 'place'],
+    compare: ['compare'],
+    fill:    ['fill'],
+    place:   ['place']
+  };
+  const pool = allTypes[m2ActType];
+  const type = pool[Math.floor(Math.random() * pool.length)];
+
+  // Number range: easy=2-digit, medium/hard=3-digit
+  const [min, max] = difficulty === 'easy' ? [10, 99] : [100, 999];
+  const isHard     = difficulty === 'hard';
+
+  if (type === 'compare') {
+    const ask = Math.random() < 0.5 ? 'greater' : 'smaller';
+    const [a, b] = m2TwoDiff(min, max);
+    return {
+      type: 'compare', isHard,
+      prompt: `Circle the number that is <b>${ask}</b>.`,
+      numbers: [a, b],
+      answer: (ask === 'greater' ? Math.max(a, b) : Math.min(a, b)).toString()
+    };
+  }
+
+  if (type === 'fill') {
+    const [a, b] = m2TwoDiff(min, max);
+    const rel = a > b ? 'greater than' : 'smaller than';
+    return {
+      type: 'fill', isHard,
+      prompt: `<b>${a}</b> is _______ <b>${b}</b>.`,
+      answer: rel,
+      options: ['greater than', 'smaller than']
+    };
+  }
+
+  // place value — always 3-digit, digit must be unique in the number
+  const placeNames = ['hundreds', 'tens', 'ones'];
+  let num, str, pos, digit;
+  do {
+    num = m2RandInt(100, 999);
+    str = num.toString();
+    // pick a position whose digit appears only once
+    const uniquePositions = [0,1,2].filter(i => str.indexOf(str[i]) === str.lastIndexOf(str[i]));
+    if (uniquePositions.length === 0) continue; // all digits repeat, try again
+    pos = uniquePositions[Math.floor(Math.random() * uniquePositions.length)];
+    digit = str[pos];
+  } while (!digit);
+  return {
+    type: 'place', isHard,
+    prompt: `In <b>${num}</b>, the digit <b>${digit}</b> is in the _______ place.`,
+    answer: placeNames[pos],
+    options: ['hundreds', 'tens', 'ones']
+  };
+}
+
+// ── Render activity ───────────────────────────────────────────────────────────
+function m2Render() {
+  const act = m2Current;
+
+  // Animate card
+  const card = document.getElementById('m2-card');
+  card.classList.remove('correct', 'wrong', 'flip-in');
+  void card.offsetWidth;
+  card.classList.add('flip-in');
+  document.getElementById('m2-icon').textContent = '';
+  document.getElementById('m2-question').innerHTML = act.prompt;
+
+  const area     = document.getElementById('m2-answer-area');
+  const checkBtn = document.getElementById('m2-check-btn');
+  const nextBtn  = document.getElementById('m2-next-btn');
+  area.innerHTML = '';
+  checkBtn.style.display = 'none';
+  nextBtn.style.display  = 'none';
+
+  if (act.type === 'compare') {
+    // Two big number buttons — always click, regardless of difficulty
+    const wrap = document.createElement('div');
+    wrap.className = 'm2-numbers';
+    act.numbers.forEach(n => {
+      const btn = document.createElement('button');
+      btn.className = 'm2-num-btn';
+      btn.textContent = n;
+      btn.onclick = () => m2PickNumber(n.toString(), wrap);
+      wrap.appendChild(btn);
+    });
+    area.appendChild(wrap);
+
+  } else if (!act.isHard) {
+    // Easy/Medium: option buttons
+    const wrap = document.createElement('div');
+    wrap.className = 'm2-text-options';
+    act.options.forEach(opt => {
+      const btn = document.createElement('button');
+      btn.className = 'm2-opt-btn';
+      btn.textContent = opt;
+      btn.onclick = () => m2PickOption(opt, wrap);
+      wrap.appendChild(btn);
+    });
+    area.appendChild(wrap);
+
+  } else {
+    // Hard: type answer
+    const inp = document.createElement('input');
+    inp.className   = 'answer-input';
+    inp.id          = 'm2-input';
+    inp.type        = 'text';
+    inp.placeholder = 'Type your answer...';
+    inp.autocomplete = 'off';
+    inp.spellcheck  = false;
+    inp.onkeydown   = e => { if (e.key === 'Enter') m2Check(); };
+    const wrap = document.createElement('div');
+    wrap.className = 'input-area';
+    wrap.appendChild(inp);
+    area.appendChild(wrap);
+    checkBtn.style.display = 'block';
+    checkBtn.disabled = false;
+    setTimeout(() => inp.focus(), 50);
+  }
+}
+
+// ── Answer handlers ───────────────────────────────────────────────────────────
+function m2PickNumber(value, wrap) {
+  if (m2Answered) return;
+  m2Answered = true;
+  const isCorrect = value === m2Current.answer;
+  wrap.querySelectorAll('.m2-num-btn').forEach(b => {
+    b.disabled = true;
+    if (b.textContent === m2Current.answer) b.classList.add('sel-correct');
+    else if (b.textContent === value && !isCorrect) b.classList.add('sel-wrong');
+  });
+  m2Resolve(isCorrect);
+}
+
+function m2PickOption(value, wrap) {
+  if (m2Answered) return;
+  m2Answered = true;
+  const isCorrect = value === m2Current.answer;
+  wrap.querySelectorAll('.m2-opt-btn').forEach(b => {
+    b.disabled = true;
+    if (b.textContent === m2Current.answer) b.classList.add('sel-correct');
+    else if (b.textContent === value && !isCorrect) b.classList.add('sel-wrong');
+  });
+  m2Resolve(isCorrect);
+}
+
+function m2Check() {
+  if (m2Answered) return;
+  m2Answered = true;
+  const inp = document.getElementById('m2-input');
+  const raw = inp.value.trim().toLowerCase();
+  const isCorrect = raw === m2Current.answer.toLowerCase();
+  inp.className = 'answer-input ' + (isCorrect ? 'correct' : 'wrong');
+  document.getElementById('m2-check-btn').disabled = true;
+  if (!isCorrect) setTimeout(() => { inp.value = m2Current.answer; }, 250);
+  m2Resolve(isCorrect);
+}
+
+function m2Resolve(isCorrect) {
+  const card = document.getElementById('m2-card');
+  card.classList.add(isCorrect ? 'correct' : 'wrong');
+  document.getElementById('m2-icon').textContent = isCorrect ? '✅' : '❌';
+
+  if (isCorrect) { m2Score.correct++; showToast('🎉 Correct!', 'success'); launchConfetti(); }
+  else           { m2Score.wrong++;   showToast('→ ' + m2Current.answer, 'error'); }
+
+  m2Score.done++;
+  m2UpdateScore();
+
+  if (m2Score.done >= m2Score.total) {
+    setTimeout(m2ShowResults, 1200);
+  } else if (isCorrect) {
+    setTimeout(m2Next, 900);
+  } else {
+    document.getElementById('m2-check-btn').style.display = 'none';
+    document.getElementById('m2-next-btn').style.display  = 'block';
+  }
+}
+
+function m2Next() {
+  m2Answered = false;
+  m2Current  = m2GenActivity();
+  m2Render();
+}
+
+function m2UpdateScore() {
+  document.getElementById('m2-correct').textContent = m2Score.correct;
+  document.getElementById('m2-wrong').textContent   = m2Score.wrong;
+  document.getElementById('m2-done').textContent    = m2Score.done;
+  document.getElementById('m2-total').textContent   = m2Score.total;
+}
+
+function m2ShowResults() {
+  const pct   = Math.round((m2Score.correct / m2Score.total) * 100);
+  const emoji = pct === 100 ? '🏆' : pct >= 70 ? '⭐' : '💪';
+  showToast(emoji + ' Done! ' + m2Score.correct + '/10 (' + pct + '%)', pct >= 70 ? 'success' : '');
+  setTimeout(m2Init, 2500);
+}
+
+// ══ MODULE 3: Order & Patterns ═══════════════════════════════════════════════
+
+// ── Universal pointer drag ────────────────────────────────────────────────────
+const drag = { el:null, clone:null, ox:0, oy:0, onDrop:null, onReturn:null };
+
+function makeDraggable(el, onDrop, onReturn) {
+  el.style.touchAction = 'none';
+  el.addEventListener('pointerdown', e => {
+    if (el.classList.contains('done')) return;
+    e.preventDefault();
+    drag.el = el; drag.onDrop = onDrop; drag.onReturn = onReturn;
+    const r = el.getBoundingClientRect();
+    drag.ox = e.clientX - r.left; drag.oy = e.clientY - r.top;
+    drag.clone = el.cloneNode(true);
+    drag.clone.id = 'drag-clone';
+    drag.clone.style.cssText = `width:${r.width}px;left:${e.clientX-drag.ox}px;top:${e.clientY-drag.oy}px`;
+    document.body.appendChild(drag.clone);
+    el.classList.add('ghost');
+    document.addEventListener('pointermove', dragMove);
+    document.addEventListener('pointerup', dragEnd, {once:true});
+  });
+}
+
+function dragMove(e) {
+  if (!drag.clone) return;
+  drag.clone.style.left = (e.clientX - drag.ox) + 'px';
+  drag.clone.style.top  = (e.clientY - drag.oy) + 'px';
+  document.querySelectorAll('[data-drop]').forEach(z => {
+    const r = z.getBoundingClientRect();
+    z.classList.toggle('over',
+      e.clientX>=r.left && e.clientX<=r.right && e.clientY>=r.top && e.clientY<=r.bottom);
+  });
+}
+
+function dragEnd(e) {
+  document.removeEventListener('pointermove', dragMove);
+  if (!drag.clone) return;
+  let dropped = false;
+  document.querySelectorAll('[data-drop]').forEach(z => {
+    z.classList.remove('over');
+    const r = z.getBoundingClientRect();
+    if (!dropped && e.clientX>=r.left && e.clientX<=r.right &&
+        e.clientY>=r.top && e.clientY<=r.bottom) {
+      dropped = true; drag.onDrop(drag.el, z);
+    }
+  });
+  if (!dropped && drag.onReturn) drag.onReturn(drag.el);
+  drag.clone.remove(); drag.clone = null;
+  drag.el?.classList.remove('ghost'); drag.el = null;
+}
+
+// ── M3 State ─────────────────────────────────────────────────────────────────
+let m3Type  = 'mix';
+let m3Act   = null;
+let m3Score = { correct:0, wrong:0, done:0, total:8 };
+let m3Data  = {}; // per-activity state
+
+function m3SetType(t) {
+  m3Type = t;
+  document.querySelectorAll('[id^="m3-pill-"]').forEach(p => p.classList.remove('active'));
+  document.getElementById('m3-pill-'+t).classList.add('active');
+  m3Init();
+}
+
+function m3Init() {
+  m3Score = { correct:0, wrong:0, done:0, total:8 };
+  m3UpdateScore();
+  m3Next();
+}
+
+function m3Next() {
+  if (m3Score.done >= m3Score.total) { m3Results(); return; }
+  const pool = m3Type==='mix' ? ['pattern','order','evenodd'] : [m3Type];
+  const type = pool[Math.floor(Math.random()*pool.length)];
+  m3Act = m3Gen(type);
+  m3Render();
+}
+
+// ── Generators ───────────────────────────────────────────────────────────────
+function m3Ri(min,max){ return Math.floor(Math.random()*(max-min+1))+min; }
+
+function m3Gen(type) {
+  if (type==='pattern') {
+    const steps = difficulty==='easy' ? [1,2,5] : difficulty==='medium' ? [5,10,3] : [4,6,7,8,11];
+    const step  = steps[Math.floor(Math.random()*steps.length)];
+    const dir   = Math.random()<.65 ? 1 : -1;
+    const minS  = difficulty==='easy' ? 1 : 100;
+    const maxS  = difficulty==='easy' ? 90 : 900;
+    let start   = m3Ri(minS, maxS);
+    if (dir===-1) start = Math.max(start, step*6+1);
+    const seq = Array.from({length:7}, (_,i) => start + i*step*dir);
+    return { type:'pattern', seq, showN:4, step:step*dir };
+  }
+
+  if (type==='order') {
+    const [mn,mx] = difficulty==='easy' ? [10,99] : [100,999];
+    const nums = [];
+    while(nums.length<3){ const n=m3Ri(mn,mx); if(!nums.includes(n)) nums.push(n); }
+    // shuffle
+    for(let i=2;i>0;i--){const j=Math.floor(Math.random()*(i+1));[nums[i],nums[j]]=[nums[j],nums[i]];}
+    return { type:'order', nums, sorted:[...nums].sort((a,b)=>a-b) };
+  }
+
+  // evenodd
+  const count = difficulty==='easy' ? 6 : 8;
+  const [mn,mx] = difficulty==='easy' ? [1,50] : [1,500];
+  const nums = [];
+  // ensure at least 2 odd and 2 even
+  while(nums.length<count){
+    const n=m3Ri(mn,mx);
+    if(!nums.includes(n)) nums.push(n);
+  }
+  for(let i=nums.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[nums[i],nums[j]]=[nums[j],nums[i]];}
+  return { type:'evenodd', nums };
+}
+
+// ── Render ────────────────────────────────────────────────────────────────────
+function m3Render() {
+  const area = document.getElementById('m3-area');
+  area.innerHTML = '';
+  document.getElementById('m3-check-btn').style.display = 'none';
+  document.getElementById('m3-next-btn').style.display  = 'none';
+  m3Data = {};
+
+  if (m3Act.type==='pattern') renderPattern(area);
+  if (m3Act.type==='order')   renderOrder(area);
+  if (m3Act.type==='evenodd') renderEvenOdd(area);
+}
+
+// ── Pattern ───────────────────────────────────────────────────────────────────
+function renderPattern(area) {
+  const { seq, showN, step } = m3Act;
+  const dir = step > 0 ? 'up' : 'down';
+
+  const wrap = document.createElement('div');
+  wrap.className = 'card m2-card pat-wrap';
+  wrap.innerHTML = `<div class="pat-label">Complete the number pattern (counting ${dir} by ${Math.abs(step)})</div>`;
+
+  const row = document.createElement('div');
+  row.className = 'pat-seq';
+  m3Data.blanks = [];
+
+  seq.forEach((n, i) => {
+    if (i > 0) { const s=document.createElement('span'); s.className='pat-sep'; s.textContent=','; row.appendChild(s); }
+    if (i < showN) {
+      const el=document.createElement('span'); el.className='pat-num'; el.textContent=n; row.appendChild(el);
+    } else {
+      const inp=document.createElement('input');
+      inp.className='pat-blank'; inp.type='text'; inp.inputMode='numeric';
+      inp.placeholder='?'; inp.dataset.answer=n;
+      inp.addEventListener('keydown', e=>{ if(e.key==='Enter') m3Check(); });
+      row.appendChild(inp);
+      m3Data.blanks.push(inp);
+    }
+  });
+
+  wrap.appendChild(row);
+  const hint=document.createElement('div');
+  hint.className='pat-hint'; hint.textContent='Fill in all blanks, then tap Check';
+  wrap.appendChild(hint);
+  area.appendChild(wrap);
+  document.getElementById('m3-check-btn').style.display = 'block';
+  setTimeout(()=>m3Data.blanks[0]?.focus(), 80);
+}
+
+// ── Order ─────────────────────────────────────────────────────────────────────
+function renderOrder(area) {
+  const { nums, sorted } = m3Act;
+  m3Data.slots = [null, null, null]; // which number is in each slot
+  m3Data.chipHome = {}; // chipValue -> source or slot index
+
+  // Source area
+  const srcArea = document.createElement('div');
+  srcArea.className = 'ord-source';
+  srcArea.id = 'ord-src';
+
+  nums.forEach(n => {
+    const chip = makeChip(n);
+    srcArea.appendChild(chip);
+    m3Data.chipHome[n] = 'src';
+    makeDraggable(chip,
+      (el, zone) => {
+        const val = parseInt(el.dataset.val);
+        const idx = parseInt(zone.dataset.drop);
+        // If slot already filled, return its chip to source
+        if (m3Data.slots[idx] !== null) {
+          returnChipToSrc(m3Data.slots[idx]);
+        }
+        // If chip was in a slot, clear that slot
+        if (m3Data.chipHome[val] !== 'src') {
+          m3Data.slots[m3Data.chipHome[val]] = null;
+          document.querySelector(`[data-drop="${m3Data.chipHome[val]}"]`).textContent = '';
+          document.querySelector(`[data-drop="${m3Data.chipHome[val]}"]`).classList.remove('filled');
+        } else {
+          srcArea.removeChild(el);
+        }
+        // Place chip in slot
+        zone.textContent = n;
+        zone.classList.add('filled');
+        m3Data.slots[idx] = val;
+        m3Data.chipHome[val] = idx;
+        el.classList.remove('ghost');
+        el.remove();
+        checkAllSlotsFilled();
+      },
+      el => { el.classList.remove('ghost'); } // return = no-op (stays in source)
+    );
+    chip.addEventListener('click', ()=>{
+      // tap to cycle back if in source: no action needed
+    });
+  });
+
+  // Slot row
+  const slotsRow = document.createElement('div');
+  slotsRow.className = 'ord-slots-row';
+  const labels = ['Smallest','','Greatest'];
+  [0,1,2].forEach(i => {
+    const wrap = document.createElement('div'); wrap.className='ord-slot-wrap';
+    const slot = document.createElement('div');
+    slot.className = 'ord-slot'; slot.dataset.drop = i;
+    // tap slot to return chip
+    slot.addEventListener('click', () => {
+      if (m3Data.slots[i] !== null) returnChipToSrc(m3Data.slots[i]);
+    });
+    const lbl = document.createElement('div'); lbl.className='ord-label'; lbl.textContent=labels[i];
+    wrap.appendChild(slot); wrap.appendChild(lbl);
+    slotsRow.appendChild(wrap);
+  });
+
+  const title = document.createElement('div');
+  title.className='pat-label'; title.style.marginBottom='8px';
+  title.textContent='Drag to order from smallest to greatest';
+  area.appendChild(title);
+  area.appendChild(srcArea);
+  area.appendChild(slotsRow);
+
+  function returnChipToSrc(val) {
+    const slotIdx = m3Data.chipHome[val];
+    if (slotIdx !== 'src') {
+      m3Data.slots[slotIdx] = null;
+      const zone = document.querySelector(`[data-drop="${slotIdx}"]`);
+      zone.textContent=''; zone.classList.remove('filled');
+    }
+    const chip = makeChip(val);
+    makeDraggable(chip,
+      (el,zone) => { /* same logic — re-add handler */ },
+      el => el.classList.remove('ghost')
+    );
+    srcArea.appendChild(chip);
+    m3Data.chipHome[val] = 'src';
+    // Re-init draggable for returned chip
+    initOrderChip(chip, srcArea, m3Data, sorted, checkAllSlotsFilled, returnChipToSrc);
+    document.getElementById('m3-check-btn').style.display='none';
+  }
+
+  // Use a cleaner init function
+  nums.forEach(n => {
+    const chip = srcArea.querySelector(`[data-val="${n}"]`);
+    if (chip) initOrderChip(chip, srcArea, m3Data, sorted, checkAllSlotsFilled, returnChipToSrc);
+  });
+
+  function checkAllSlotsFilled() {
+    if (m3Data.slots.every(s=>s!==null))
+      document.getElementById('m3-check-btn').style.display='block';
+  }
+
+  m3Data.returnChipToSrc = returnChipToSrc;
+  m3Data.checkAllSlotsFilled = checkAllSlotsFilled;
+}
+
+function initOrderChip(chip, srcArea, data, sorted, checkFn, returnFn) {
+  // Remove old listeners by cloning
+  const fresh = chip.cloneNode(true);
+  chip.replaceWith(fresh);
+  chip = fresh;
+  chip.style.touchAction='none';
+
+  chip.addEventListener('pointerdown', e => {
+    if (chip.classList.contains('done')) return;
+    e.preventDefault();
+    const val = parseInt(chip.dataset.val);
+    drag.el = chip; drag.onReturn = el=>el.classList.remove('ghost');
+    drag.onDrop = (el, zone) => {
+      const idx = parseInt(zone.dataset.drop);
+      if (data.slots[idx] !== null) returnFn(data.slots[idx]);
+      if (data.chipHome[val] !== 'src') {
+        const oldIdx = data.chipHome[val];
+        data.slots[oldIdx] = null;
+        const oldZone = document.querySelector(`[data-drop="${oldIdx}"]`);
+        oldZone.textContent=''; oldZone.classList.remove('filled');
+      } else {
+        srcArea.contains(el) && srcArea.removeChild(el);
+      }
+      zone.textContent = val; zone.classList.add('filled');
+      data.slots[idx] = val; data.chipHome[val] = idx;
+      el.classList.remove('ghost'); el.remove();
+      checkFn();
+    };
+    const r = chip.getBoundingClientRect();
+    drag.ox = e.clientX-r.left; drag.oy = e.clientY-r.top;
+    drag.clone = chip.cloneNode(true); drag.clone.id='drag-clone';
+    drag.clone.style.cssText=`width:${r.width}px;left:${e.clientX-drag.ox}px;top:${e.clientY-drag.oy}px`;
+    document.body.appendChild(drag.clone);
+    chip.classList.add('ghost');
+    document.addEventListener('pointermove', dragMove);
+    document.addEventListener('pointerup', dragEnd, {once:true});
+  });
+
+  // Also handle tap on slot to return
+  srcArea.parentElement?.querySelectorAll('.ord-slot').forEach(slot=>{
+    slot.onclick = ()=>{
+      const idx=parseInt(slot.dataset.drop);
+      if(data.slots[idx]!==null) returnFn(data.slots[idx]);
+    };
+  });
+
+  return chip;
+}
+
+function makeChip(n) {
+  const chip = document.createElement('div');
+  chip.className='num-chip'; chip.dataset.val=n; chip.textContent=n; return chip;
+}
+
+// ── Even / Odd ────────────────────────────────────────────────────────────────
+function renderEvenOdd(area) {
+  const { nums } = m3Act;
+  m3Data.placed = {}; // val -> 'odd'|'even'|null
+  nums.forEach(n => m3Data.placed[n] = null);
+
+  const title = document.createElement('div');
+  title.className='pat-label'; title.style.marginBottom='8px';
+  title.textContent='Drag each number to the correct basket';
+  area.appendChild(title);
+
+  const srcArea = document.createElement('div'); srcArea.className='eo-source'; srcArea.id='eo-src';
+  nums.forEach(n => {
+    const chip = makeChip(n);
+    srcArea.appendChild(chip);
+    initEoChip(chip, srcArea, n);
+  });
+  area.appendChild(srcArea);
+
+  const baskets = document.createElement('div'); baskets.className='eo-baskets';
+  ['odd','even'].forEach(type => {
+    const basket = document.createElement('div');
+    basket.className=`eo-basket ${type}`; basket.dataset.drop=type;
+    const title = document.createElement('div'); title.className='eo-btitle';
+    title.textContent = type==='odd' ? '⚡ ODD' : '〇 EVEN';
+    const chips = document.createElement('div'); chips.className='eo-chips'; chips.id=`eo-${type}-chips`;
+    basket.appendChild(title); basket.appendChild(chips);
+    baskets.appendChild(basket);
+  });
+  area.appendChild(baskets);
+
+  function initEoChip(chip, src, val) {
+    chip.style.touchAction='none';
+    chip.addEventListener('pointerdown', e => {
+      if(chip.classList.contains('done')) return;
+      e.preventDefault();
+      drag.el=chip;
+      drag.onDrop=(el,zone)=>{
+        const target=zone.dataset.drop; // 'odd' or 'even'
+        // If chip was in a basket, remove it
+        if(m3Data.placed[val]) {
+          document.getElementById(`eo-${m3Data.placed[val]}-chips`).removeChild(el);
+        } else {
+          src.contains(el) && src.removeChild(el);
+        }
+        m3Data.placed[val]=target;
+        el.classList.remove('ghost');
+        document.getElementById(`eo-${target}-chips`).appendChild(el);
+        el.style.touchAction='none';
+        // allow moving back to other basket
+        initEoChip(el, src, val);
+        checkEoComplete();
+      };
+      drag.onReturn=el=>el.classList.remove('ghost');
+      const r=chip.getBoundingClientRect();
+      drag.ox=e.clientX-r.left; drag.oy=e.clientY-r.top;
+      drag.clone=chip.cloneNode(true); drag.clone.id='drag-clone';
+      drag.clone.style.cssText=`width:${r.width}px;left:${e.clientX-drag.ox}px;top:${e.clientY-drag.oy}px`;
+      document.body.appendChild(drag.clone);
+      chip.classList.add('ghost');
+      document.addEventListener('pointermove',dragMove);
+      document.addEventListener('pointerup',dragEnd,{once:true});
+    });
+  }
+  m3Data.initEoChip=initEoChip;
+
+  function checkEoComplete() {
+    if(Object.values(m3Data.placed).every(v=>v!==null))
+      document.getElementById('m3-check-btn').style.display='block';
+  }
+}
+
+// ── Check ─────────────────────────────────────────────────────────────────────
+function m3Check() {
+  const act = m3Act;
+  document.getElementById('m3-check-btn').style.display='none';
+
+  if (act.type==='pattern') {
+    let allCorrect=true;
+    m3Data.blanks.forEach(inp=>{
+      const correct=parseInt(inp.dataset.answer);
+      const val=parseInt(inp.value.trim());
+      const ok=val===correct;
+      inp.className='pat-blank '+(ok?'correct':'wrong');
+      inp.value=correct; inp.disabled=true;
+      if(!ok) allCorrect=false;
+    });
+    m3Resolve(allCorrect);
+  }
+
+  else if (act.type==='order') {
+    const { sorted } = act;
+    let allCorrect=true;
+    [0,1,2].forEach(i=>{
+      const slot=document.querySelector(`[data-drop="${i}"]`);
+      const ok=m3Data.slots[i]===sorted[i];
+      slot.classList.add(ok?'correct':'wrong');
+      slot.classList.remove('filled');
+      if(!ok){ slot.textContent=`${m3Data.slots[i]} → ${sorted[i]}`; allCorrect=false; }
+    });
+    m3Resolve(allCorrect);
+  }
+
+  else if (act.type==='evenodd') {
+    let allCorrect=true;
+    const { nums } = act;
+    nums.forEach(n=>{
+      const correct=n%2===0?'even':'odd';
+      const placed=m3Data.placed[n];
+      const ok=placed===correct;
+      const chip=document.querySelector(`#eo-${placed}-chips [data-val="${n}"]`);
+      if(chip){ chip.style.background=ok?'#2a9d5c':'#d94040'; chip.classList.add('done'); }
+      if(!ok) allCorrect=false;
+    });
+    m3Resolve(allCorrect);
+  }
+}
+
+function m3Resolve(ok) {
+  if(ok){ m3Score.correct++; showToast('🎉 Correct!','success'); launchConfetti(); }
+  else  { m3Score.wrong++;   showToast('Almost! Check the answers.','error'); }
+  m3Score.done++;
+  m3UpdateScore();
+  if(m3Score.done>=m3Score.total) setTimeout(m3Results,1400);
+  else if(ok) setTimeout(m3Next,1000);
+  else document.getElementById('m3-next-btn').style.display='block';
+}
+
+function m3UpdateScore() {
+  document.getElementById('m3-correct').textContent=m3Score.correct;
+  document.getElementById('m3-wrong').textContent=m3Score.wrong;
+  document.getElementById('m3-done').textContent=m3Score.done;
+  document.getElementById('m3-total').textContent=m3Score.total;
+}
+
+function m3Results() {
+  const pct=Math.round(m3Score.correct/m3Score.total*100);
+  const emoji=pct===100?'🏆':pct>=70?'⭐':'💪';
+  showToast(`${emoji} Done! ${m3Score.correct}/${m3Score.total} (${pct}%)`, pct>=70?'success':'');
+  setTimeout(m3Init,2500);
+}
+
+// ── Boot ──────────────────────────────────────────────────────────────────────
+window.speechSynthesis.onvoiceschanged = () => {};
+init();
+</script>
+</body>
+</html>
