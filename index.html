@@ -24,6 +24,7 @@
       width: 100%;
       max-width: min(700px, 100%);
       box-shadow: 0 8px 48px rgba(0,0,0,0.6);
+      overflow-x: hidden;
     }
 
     /* ── Header ── */
@@ -937,11 +938,12 @@
 
     /* Planet dropdown panel */
     .nav-planets-panel {
-      display: flex; gap: 6px;
+      display: flex; flex-wrap: wrap; gap: 6px;
       background: linear-gradient(140deg, #060b1a 0%, #0c1530 100%);
       border-radius: 14px; padding: 10px;
       margin-top: 4px;
       box-shadow: 0 4px 20px rgba(0,0,30,.4);
+      box-sizing: border-box; width: 100%;
     }
 
     /* Planet button */
@@ -3623,35 +3625,40 @@ function m5Stroke(x1, y1, x2, y2) {
 
 function m5DrawBoardQuestion() {
   if (!m5Ctx || !m5G.current) return;
-  const q = m5G.current;
-  const W = m5Canvas.offsetWidth;
+  const q    = m5G.current;
+  const W    = m5Canvas.offsetWidth;
+  const fs   = Math.max(16, Math.round(W / 18)); // scales with canvas width
+  const charW = fs * 0.62;
+  const lh   = fs * 1.55;
+  const y1   = fs * 1.6;
+  const y2   = y1 + lh;
+  const lineY = y2 + fs * 0.8;
+  const y4   = lineY + fs * 1.1;
   m5Ctx.save();
-  m5Ctx.font = 'bold 16px "Courier New",monospace';
-  m5Ctx.fillStyle = 'rgba(240,242,180,.45)';
+  m5Ctx.font = `bold ${fs}px "Courier New",monospace`;
+  m5Ctx.fillStyle = 'rgba(240,242,180,.55)';
   const opA = String(q.opA), opB = String(q.opB), op = q.op;
   const maxLen = Math.max(opA.length, opB.length) + 2;
-  const charW = 11, startX = W * .5 - (maxLen * charW * .5);
-  const y1 = 30, y2 = 52, y3 = 68, y4 = 84;
+  const startX = W * .5 - (maxLen * charW * .5);
   m5Ctx.fillText(opA.padStart(maxLen, ' '), startX, y1);
   m5Ctx.fillText((op + ' ' + opB).padStart(maxLen, ' '), startX, y2);
-  m5Ctx.fillStyle = 'rgba(240,242,180,.3)';
-  m5Ctx.fillRect(startX, y3 - 2, maxLen * charW, 2);
-  m5Ctx.fillStyle = 'rgba(240,242,180,.2)';
+  m5Ctx.fillStyle = 'rgba(240,242,180,.35)';
+  m5Ctx.fillRect(startX, lineY, maxLen * charW, 2);
+  m5Ctx.fillStyle = 'rgba(240,242,180,.25)';
   m5Ctx.fillText('?'.padStart(maxLen, ' '), startX, y4);
   m5Ctx.restore();
+  // store layout for answer drawing
+  m5Canvas._layout = { fs, charW, maxLen, startX, lineY, y4 };
 }
 
 function m5DrawAnswer(ansStr) {
-  if (!m5Ctx || !m5G.current) return;
-  const q = m5G.current;
-  const W = m5Canvas.offsetWidth;
-  const maxLen = Math.max(String(q.opA).length, String(q.opB).length) + 2;
-  const charW = 11, startX = W * .5 - (maxLen * charW * .5);
-  m5Ctx.clearRect(startX, 72, maxLen * charW + 16, 22);
+  if (!m5Ctx || !m5G.current || !m5Canvas._layout) return;
+  const { fs, charW, maxLen, startX, lineY, y4 } = m5Canvas._layout;
+  m5Ctx.clearRect(startX - 4, lineY + 2, maxLen * charW + 16, fs * 1.5);
   m5Ctx.save();
-  m5Ctx.font = 'bold 16px "Courier New",monospace';
-  m5Ctx.fillStyle = 'rgba(240,242,180,.85)';
-  m5Ctx.fillText(ansStr.padStart(maxLen, ' '), startX, 84);
+  m5Ctx.font = `bold ${fs}px "Courier New",monospace`;
+  m5Ctx.fillStyle = 'rgba(240,242,180,.9)';
+  m5Ctx.fillText(ansStr.padStart(maxLen, ' '), startX, y4);
   m5Ctx.restore();
 }
 
