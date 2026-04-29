@@ -9,7 +9,7 @@
 
     body {
       font-family: 'Segoe UI', system-ui, sans-serif;
-      background: #e8f4fd;
+      background: linear-gradient(160deg, #0a0e1c 0%, #0f1628 60%, #0c1220 100%);
       min-height: 100vh;
       display: flex;
       align-items: flex-start;
@@ -23,7 +23,7 @@
       padding: clamp(16px, 4vw, 36px) clamp(14px, 4vw, 32px);
       width: 100%;
       max-width: min(700px, 100%);
-      box-shadow: 0 8px 32px rgba(100,160,220,0.18);
+      box-shadow: 0 8px 48px rgba(0,0,0,0.6);
     }
 
     /* ── Header ── */
@@ -955,6 +955,68 @@
     .m5-ph-title { color:white; font-weight:800; font-size:.95rem; }
     .m5-ph-sub   { color:rgba(180,210,255,.45); font-size:.62rem; margin-top:1px; }
 
+    /* ── Mission list ── */
+    .m5-mission-list {
+      display:flex; flex-direction:column; gap:8px;
+      margin-bottom:12px; position:relative; z-index:2;
+    }
+    .m5-mission-card {
+      display:flex; align-items:center; gap:12px;
+      padding:13px 14px; border-radius:14px; cursor:pointer;
+      background:rgba(255,255,255,.05);
+      border:1.5px solid rgba(100,180,255,.14);
+      transition:all .18s;
+    }
+    .m5-mission-card:hover {
+      background:rgba(100,180,255,.12);
+      border-color:rgba(100,180,255,.35);
+      transform:translateX(3px);
+    }
+    .m5-mc-info  { flex:1; min-width:0; }
+    .m5-mc-num   { font-size:.58rem; font-weight:800; text-transform:uppercase;
+                   letter-spacing:1.5px; color:rgba(100,180,255,.55); margin-bottom:2px; }
+    .m5-mc-title { font-size:.88rem; font-weight:800; color:white; }
+    .m5-mc-desc  { font-size:.66rem; color:rgba(180,210,255,.4); margin-top:2px; }
+    .m5-mc-stars { font-size:.95rem; letter-spacing:1px; flex-shrink:0; }
+
+    /* ── End screen (after mission) ── */
+    .m5-end-box {
+      background:rgba(255,255,255,.05); border:1.5px solid rgba(100,180,255,.18);
+      border-radius:18px; padding:24px 16px; text-align:center;
+      position:relative; z-index:2;
+    }
+    .m5-end-title { color:white; font-weight:800; font-size:1.1rem; margin-bottom:4px; }
+    .m5-end-sub   { color:rgba(180,210,255,.55); font-size:.8rem; margin-bottom:16px; }
+    .m5-star-row  { display:flex; justify-content:center; gap:6px; margin:14px 0; }
+    .m5-end-star  {
+      font-size:2.2rem;
+      animation:m5starPop .45s ease backwards;
+      display:inline-block;
+    }
+    .m5-end-star.empty { filter:grayscale(1); opacity:.22; }
+    .m5-end-star:nth-child(1) { animation-delay:.1s; }
+    .m5-end-star:nth-child(2) { animation-delay:.3s; }
+    .m5-end-star:nth-child(3) { animation-delay:.5s; }
+    @keyframes m5starPop {
+      from { transform:scale(0) rotate(-20deg); opacity:0; }
+      to   { transform:scale(1) rotate(0);      opacity:1; }
+    }
+    .m5-end-btns { display:flex; gap:8px; justify-content:center; margin-top:6px; }
+    .m5-end-btn  {
+      padding:11px 20px; border-radius:50px; border:none;
+      font-size:.85rem; font-weight:800; cursor:pointer; transition:all .18s;
+    }
+    .m5-end-btn.retry { background:rgba(255,255,255,.1); color:white; }
+    .m5-end-btn.retry:hover { background:rgba(255,255,255,.18); }
+    .m5-end-btn.missions { background:rgba(100,180,255,.22); color:#adf; }
+    .m5-end-btn.missions:hover { background:rgba(100,180,255,.35); }
+
+    /* ── Flat game mode (less distraction) ── */
+    .m5-space.m5-in-game {
+      background: #08111a !important;
+    }
+    .m5-space.m5-in-game .m5-star { display:none; }
+
     /* Hamburger button */
     .m5-menu-btn {
       display: flex; align-items: center; gap: 8px;
@@ -1123,23 +1185,21 @@
       <div class="planet-btn p-active" id="pnav-1" onclick="navPlanet(1)">
         <div class="planet-ball"></div>
         <div class="planet-name">Milenia</div>
-        <div class="planet-concept">Hasta 1.000</div>
+        <div class="planet-concept">Up to 1,000</div>
         <span class="planet-check" id="pcheck-1">✓</span>
       </div>
 
-      <div class="planet-btn p-locked" id="pnav-2" onclick="navPlanet(2)">
+      <div class="planet-btn" id="pnav-2" onclick="navPlanet(2)">
         <div class="planet-ball"></div>
         <div class="planet-name">Columnia</div>
-        <div class="planet-concept">Suma</div>
-        <span class="planet-lock" id="plock-2">🔒</span>
+        <div class="planet-concept">Addition</div>
         <span class="planet-check" id="pcheck-2">✓</span>
       </div>
 
-      <div class="planet-btn p-locked" id="pnav-3" onclick="navPlanet(3)">
+      <div class="planet-btn" id="pnav-3" onclick="navPlanet(3)">
         <div class="planet-ball"></div>
         <div class="planet-name">Substrata</div>
-        <div class="planet-concept">Resta</div>
-        <span class="planet-lock" id="plock-3">🔒</span>
+        <div class="planet-concept">Subtraction</div>
         <span class="planet-check" id="pcheck-3">✓</span>
       </div>
 
@@ -1449,12 +1509,12 @@
       <!-- Exercise type pills -->
       <div class="m5-ex-pills" id="m5-ex-pills"></div>
 
-      <!-- Preview card -->
-      <div class="m5-preview" id="m5-preview">
+      <!-- Preview card (hidden — mission cards replace it) -->
+      <div class="m5-preview" id="m5-preview" style="display:none">
         <div class="m5-preview-emoji" id="m5-prev-emoji">📜</div>
-        <div class="m5-preview-title" id="m5-prev-title">¡Listo para despegar!</div>
-        <div class="m5-preview-desc"  id="m5-prev-desc">Elige un tipo de ejercicio y presiona Jugar</div>
-        <button class="m5-start-btn"  onclick="m5StartGame()">▶ Jugar</button>
+        <div class="m5-preview-title" id="m5-prev-title">Ready for launch!</div>
+        <div class="m5-preview-desc"  id="m5-prev-desc">Choose a mission and tap to start</div>
+        <button class="m5-start-btn"  onclick="m5StartGame()">▶ Play</button>
       </div>
 
       <!-- Game area -->
@@ -1472,13 +1532,13 @@
           <div class="m5-q-sub"   id="m5-q-sub"></div>
         </div>
 
-        <!-- Pizarrón (solo ejercicios verticales) -->
+        <!-- Chalkboard (vertical operations only) -->
         <div class="m5-board-wrap" id="m5-board-wrap">
           <div class="m5-board-toolbar">
-            <span class="m5-board-label">Pizarrón</span>
-            <button class="m5-board-btn active" id="m5-btn-draw" onclick="m5SetBoardMode('draw')">✏️ Rayar</button>
-            <button class="m5-board-btn"        id="m5-btn-calc" onclick="m5SetBoardMode('calc')">🔢 Calcular</button>
-            <button class="m5-board-btn erase"  onclick="m5ClearBoard()">🗑️ Borrar</button>
+            <span class="m5-board-label">Chalkboard</span>
+            <button class="m5-board-btn active" id="m5-btn-draw" onclick="m5SetBoardMode('draw')">✏️ Draw</button>
+            <button class="m5-board-btn"        id="m5-btn-calc" onclick="m5SetBoardMode('calc')">🔢 Calculate</button>
+            <button class="m5-board-btn erase"  onclick="m5ClearBoard()">🗑️ Erase</button>
           </div>
           <div class="m5-board-canvas-wrap">
             <canvas id="m5-canvas"></canvas>
@@ -1505,9 +1565,27 @@
         </div>
 
         <div id="m5-answer-area"></div>
-        <button class="m5-back-btn" onclick="m5BackFromGame()">← Volver</button>
+        <button class="m5-back-btn" onclick="m5BackFromGame()">← Back to missions</button>
 
       </div><!-- end m5-game-area -->
+
+      <!-- End screen (shown after mission) -->
+      <div id="m5-end-screen" style="display:none">
+        <div class="m5-end-box">
+          <div class="m5-end-title" id="m5-end-title">Mission Complete! 🚀</div>
+          <div class="m5-star-row">
+            <span class="m5-end-star" id="m5-end-star-1">⭐</span>
+            <span class="m5-end-star" id="m5-end-star-2">⭐</span>
+            <span class="m5-end-star" id="m5-end-star-3">⭐</span>
+          </div>
+          <div class="m5-end-sub" id="m5-end-sub">0 / 15 correct</div>
+          <div class="m5-end-btns">
+            <button class="m5-end-btn retry"    onclick="m5RetryMission()">🔄 Try Again</button>
+            <button class="m5-end-btn missions" onclick="m5BackFromGame()">📋 Missions</button>
+          </div>
+        </div>
+      </div>
+
     </div><!-- end m5-space -->
 
   </div><!-- end mod5 -->
@@ -2946,313 +3024,332 @@ function m4Results() {
 
 // ── Module 5: Astro Math ──────────────────────────────────────────────────────
 
-// Planetas de la Galaxia Intermedia — 2° Básico (según vault AstroMath)
 const M5_PLANETS = {
   1: {
     emoji: '📜', name: 'Milenia',
-    mision: '01', concepto: 'Números hasta 1000',
+    mision: '01', concepto: 'Numbers up to 1,000',
     exercises: [
-      { id: 'fill',    label: '✏️ Leer y escribir', desc: 'Leer número escrito → escribir dígitos', act: 'ACT-FILL'    },
-      { id: 'place',   label: '📍 Valor posicional', desc: 'Unidades, decenas y centenas',           act: 'ACT-PLACE'  },
-      { id: 'compare', label: '⚖️ Comparar',         desc: 'Número en recta numérica',               act: 'ACT-COMPARE'},
-      { id: 'order',   label: '📊 Ordenar',           desc: 'Ordenar 3 números de menor a mayor',     act: 'ACT-ORDER'  },
+      { id: 'fill',    label: '✏️ Read & Write',      desc: 'Read a number word — write the digits',  act: 'ACT-FILL'    },
+      { id: 'place',   label: '📍 Place Value',        desc: 'Identify hundreds, tens and ones',        act: 'ACT-PLACE'   },
+      { id: 'compare', label: '⚖️ Compare Numbers',    desc: 'Which number is greater or smaller?',    act: 'ACT-COMPARE' },
+      { id: 'order',   label: '📊 Order Numbers',      desc: 'Find the smallest or largest of three',  act: 'ACT-ORDER'   },
     ]
   },
   2: {
     emoji: '🏗️', name: 'Columnia',
-    mision: '02', concepto: 'Suma hasta 1000',
+    mision: '02', concepto: 'Addition up to 1,000',
     exercises: [
-      { id: 'add',     label: '➕ Suma vertical',    desc: 'Suma con reagrupamiento',                act: 'ACT-ADD'    },
-      { id: 'bond',    label: '🔗 Número que falta', desc: 'Completar: 3 + ___ = 7',                 act: 'ACT-BOND'   },
-      { id: 'fill',    label: '✏️ Bar model',        desc: 'Parte + parte = total',                  act: 'ACT-FILL'   },
-      { id: 'word',    label: '📖 Problema',         desc: 'Aliens apilando bloques',                act: 'ACT-WORD'   },
+      { id: 'add',  label: '➕ Column Addition', desc: 'Add 3-digit numbers with regrouping',     act: 'ACT-ADD'  },
+      { id: 'bond', label: '🔗 Missing Number',  desc: 'Find the number that completes the sum', act: 'ACT-BOND' },
+      { id: 'fill', label: '📦 Bar Model',       desc: 'Part + Part = Whole',                    act: 'ACT-FILL' },
+      { id: 'word', label: '📖 Word Problems',   desc: 'Columnia aliens stacking blocks',        act: 'ACT-WORD' },
     ]
   },
   3: {
     emoji: '⛏️', name: 'Substrata',
-    mision: '03', concepto: 'Resta hasta 1000',
+    mision: '03', concepto: 'Subtraction up to 1,000',
     exercises: [
-      { id: 'sub',     label: '➖ Resta vertical',   desc: 'Resta con préstamo',                     act: 'ACT-SUB'    },
-      { id: 'fill',    label: '✏️ Completar resta',  desc: 'Completar: 500 − ___ = 320',             act: 'ACT-FILL'   },
-      { id: 'compare', label: '⚖️ Mayor diferencia', desc: 'Mayor / menor diferencia entre 2 pares', act: 'ACT-COMPARE'},
-      { id: 'word',    label: '📖 Problema',         desc: 'Mineros excavando',                      act: 'ACT-WORD'   },
+      { id: 'sub',     label: '➖ Column Subtraction', desc: 'Subtract with borrowing',               act: 'ACT-SUB'     },
+      { id: 'fill',    label: '✏️ Missing Number',     desc: 'Find the missing number in a subtraction', act: 'ACT-FILL' },
+      { id: 'compare', label: '⚖️ Bigger Difference',  desc: 'Which pair has the bigger difference?', act: 'ACT-COMPARE' },
+      { id: 'word',    label: '📖 Word Problems',      desc: 'Substrata miners digging deep',         act: 'ACT-WORD'    },
     ]
   }
 };
 
-let m5ActivePlanet  = 1;
-let m5ActiveEx      = 'mix';
-let m5Completed     = { 1: false, 2: false, 3: false };
+let m5ActivePlanet = 1;
+let m5ActiveEx     = 'fill';
+let m5Stars        = {};
 
-function m5Init() {
-  // Called by old setModule(5) — redirect to navPlanet
-  navPlanet(m5ActivePlanet || 1);
+function m5Init() { navPlanet(m5ActivePlanet || 1); }
+
+// ── Star helpers ──────────────────────────────────────────────────────────────
+function m5SK(planet, exId)         { return `${planet}-${exId}`; }
+function m5GetStars(planet, exId)   { return m5Stars[m5SK(planet, exId)] || 0; }
+function m5SetStars(planet, exId, s){ m5Stars[m5SK(planet, exId)] = s; }
+function m5StarStr(s)               { return '⭐'.repeat(s) + '☆'.repeat(3 - s); }
+function m5CalcStars(correct, total) {
+  const pct = correct / total;
+  if (pct >= 0.9) return 3;
+  if (pct >= 0.7) return 2;
+  if (pct >= 0.5) return 1;
+  return 0;
 }
 
-function m5ToggleMenu() {
-  const panel   = document.getElementById('m5-side-panel');
-  const overlay = document.getElementById('m5-overlay');
-  const open    = panel.classList.toggle('open');
-  overlay.classList.toggle('open', open);
-}
-
-function m5CloseMenu() {
-  document.getElementById('m5-side-panel').classList.remove('open');
-  document.getElementById('m5-overlay').classList.remove('open');
-}
-
-function m5SelectPlanet(n) {
-  if (n > 1 && !m5Completed[n - 1]) return;
-  m5ActivePlanet = n;
-  m5ActiveEx     = M5_PLANETS[n].exercises[0].id;
-  m5CloseMenu();
-  m5RenderPlanet(n);
-  m5RefreshPanel();
-}
-
+// ── Render planet (mission card list) ────────────────────────────────────────
 function m5RenderPlanet(n) {
   const p = M5_PLANETS[n];
-  document.getElementById('m5-cur-emoji').textContent = p.emoji;
-  document.getElementById('m5-cur-name').textContent  = p.name;
+  document.getElementById('m5-ph-emoji').textContent = p.emoji;
+  document.getElementById('m5-ph-title').textContent = p.name;
+  document.getElementById('m5-ph-sub').textContent   = `${p.concepto} · Mission ${p.mision}`;
 
-  // Pills
   const pillsEl = document.getElementById('m5-ex-pills');
+  pillsEl.style.display = '';
   pillsEl.innerHTML = '';
-  p.exercises.forEach(ex => {
-    const pill = document.createElement('span');
-    pill.className = 'm5-ex-pill' + (ex.id === m5ActiveEx ? ' active' : '');
-    pill.textContent = ex.label;
-    pill.dataset.id  = ex.id;
-    pill.onclick = () => m5SetEx(ex.id);
-    pillsEl.appendChild(pill);
+  const list = document.createElement('div');
+  list.className = 'm5-mission-list';
+  p.exercises.forEach((ex, idx) => {
+    const stars = m5GetStars(n, ex.id);
+    const card  = document.createElement('div');
+    card.className = 'm5-mission-card';
+    card.innerHTML = `
+      <div class="m5-mc-info">
+        <div class="m5-mc-num">Mission ${String(idx + 1).padStart(2, '0')}</div>
+        <div class="m5-mc-title">${ex.label}</div>
+        <div class="m5-mc-desc">${ex.desc}</div>
+      </div>
+      <div class="m5-mc-stars">${m5StarStr(stars)}</div>`;
+    card.onclick = () => m5StartMission(ex.id);
+    list.appendChild(card);
   });
+  pillsEl.appendChild(list);
 
-  m5UpdatePreview();
+  document.getElementById('m5-preview').style.display    = 'none';
+  document.getElementById('m5-game-area').style.display  = 'none';
+  document.getElementById('m5-end-screen').style.display = 'none';
+  document.querySelector('.m5-space').classList.remove('m5-in-game');
 }
 
-function m5SetEx(id) {
-  m5ActiveEx = id;
-  document.querySelectorAll('.m5-ex-pill').forEach(p => p.classList.remove('active'));
-  const active = document.querySelector(`.m5-ex-pill[data-id="${id}"]`);
-  if (active) active.classList.add('active');
-  m5UpdatePreview();
-}
-
-function m5UpdatePreview() {
-  const p  = M5_PLANETS[m5ActivePlanet];
-  const ex = p.exercises.find(e => e.id === m5ActiveEx) || p.exercises[0];
-  document.getElementById('m5-prev-emoji').textContent = p.emoji;
-  document.getElementById('m5-prev-title').textContent = ex.desc;
-  document.getElementById('m5-prev-desc').textContent  =
-    `Misión ${p.mision} · ${p.name} · ${ex.act}`;
-}
-
-function m5RefreshPanel() {
-  [1, 2, 3].forEach(n => {
-    const item  = document.getElementById(`m5-item-${n}`);
-    const lock  = document.getElementById(`m5-lock-${n}`);
-    const check = document.getElementById(`m5-check-${n}`);
-    const unlocked = n === 1 || m5Completed[n - 1];
-
-    item.classList.toggle('m5-planet-locked',  !unlocked);
-    item.classList.toggle('m5-planet-active',  n === m5ActivePlanet);
-    if (lock)  lock.style.display  = unlocked ? 'none' : 'inline';
-    if (check) check.style.display = m5Completed[n] ? 'inline' : 'none';
-  });
+// ── Start a mission ───────────────────────────────────────────────────────────
+function m5StartMission(exId) {
+  m5ActiveEx = exId;
+  m5StartGame();
 }
 
 // ── Game state ────────────────────────────────────────────────────────────────
-let m5G = { lives:3, score:0, done:0, total:8, current:null, locked:false, ansStr:'' };
+let m5G = { lives:3, score:0, done:0, total:15, correct:0, current:null, locked:false, ansStr:'' };
 let m5Canvas = null, m5Ctx = null, m5Dpr = 1;
 let m5Drawing = false, m5Lx = 0, m5Ly = 0;
-let m5BoardMode = 'draw'; // 'draw' | 'calc'
+let m5BoardMode = 'draw';
 let m5CalcExpr  = '';
 
-// ── Number → Spanish (for Milenia) ───────────────────────────────────────────
-function m5n2es(n) {
-  if (n === 0)    return 'cero';
-  if (n === 1000) return 'mil';
-  const u = ['','uno','dos','tres','cuatro','cinco','seis','siete','ocho','nueve',
-              'diez','once','doce','trece','catorce','quince','dieciséis',
-              'diecisiete','dieciocho','diecinueve'];
-  const d = ['','','veinte','treinta','cuarenta','cincuenta','sesenta','setenta','ochenta','noventa'];
-  const c = ['','ciento','doscientos','trescientos','cuatrocientos','quinientos',
-              'seiscientos','setecientos','ochocientos','novecientos'];
-  if (n === 100) return 'cien';
-  if (n < 20)  return u[n];
-  if (n < 30)  { const r=n-20; return r===0?'veinte':'veinti'+(['','uno','dós','trés','cuatro','cinco','séis','siete','ocho','nueve'][r]||u[r]); }
-  if (n < 100) { const t=Math.floor(n/10),r=n%10; return r===0?d[t]:d[t]+' y '+u[r]; }
-  const h=Math.floor(n/100),rest=n%100;
-  return rest===0?c[h]:c[h]+' '+m5n2es(rest);
+// ── Start game ────────────────────────────────────────────────────────────────
+function m5StartGame() {
+  m5G = { lives:3, score:0, done:0, total:15, correct:0, current:null, locked:false, ansStr:'' };
+  document.getElementById('m5-ex-pills').style.display   = 'none';
+  document.getElementById('m5-preview').style.display    = 'none';
+  document.getElementById('m5-end-screen').style.display = 'none';
+  document.getElementById('m5-game-area').style.display  = 'block';
+  document.querySelector('.m5-space').classList.add('m5-in-game');
+  m5NextQ();
+}
+
+// ── Back to missions ──────────────────────────────────────────────────────────
+function m5BackFromGame() {
+  document.getElementById('m5-game-area').style.display  = 'none';
+  document.getElementById('m5-end-screen').style.display = 'none';
+  document.querySelector('.m5-space').classList.remove('m5-in-game');
+  m5RenderPlanet(m5ActivePlanet);
+}
+
+// ── Retry ─────────────────────────────────────────────────────────────────────
+function m5RetryMission() {
+  document.getElementById('m5-end-screen').style.display = 'none';
+  m5StartGame();
 }
 
 // ── Question generators ───────────────────────────────────────────────────────
-function m5shuffle(a){ return a.sort(()=>Math.random()-.5); }
-function m5rnd(min,max){ return Math.floor(Math.random()*(max-min+1))+min; }
+function m5shuffle(a) { return a.sort(() => Math.random() - .5); }
+function m5rnd(min, max) { return Math.floor(Math.random() * (max - min + 1)) + min; }
 
-function m5choices(correct, planet){
-  const spread = planet===1?80:120;
+function m5choices(correct, spread) {
+  spread = spread || 80;
   const pool = new Set([correct]);
-  while(pool.size<4){
-    let v = correct + m5rnd(-spread,spread);
-    if(v>0 && v!==correct) pool.add(v);
+  while (pool.size < 4) {
+    let v = correct + m5rnd(-spread, spread);
+    if (v > 0 && v !== correct) pool.add(v);
   }
   return m5shuffle([...pool]);
 }
 
-function m5GenQ(){
+const M5_ADD_WORDS = [
+  (a,b) => `The Columnia aliens collected\n${a} and ${b} blocks.\nHow many blocks in total?`,
+  (a,b) => `Builder A has ${a} bricks.\nBuilder B has ${b} bricks.\nHow many bricks altogether?`,
+  (a,b) => `Planet Columnia has ${a} blue stars\nand ${b} red stars.\nHow many stars in total?`,
+  (a,b) => `A rocket carries ${a} kg of supplies.\nA second rocket carries ${b} kg.\nWhat is the total weight?`,
+  (a,b) => `There are ${a} aliens on Level 1\nand ${b} aliens on Level 2.\nHow many aliens are there?`,
+];
+const M5_SUB_WORDS = [
+  (a,b) => `The Substrata miners had ${a} rocks.\nThey used ${b} rocks to build a wall.\nHow many rocks are left?`,
+  (a,b) => `A spaceship had ${a} fuel cells.\nIt used ${b} on the journey.\nHow many fuel cells remain?`,
+  (a,b) => `Planet Substrata had ${a} crystals.\n${b} crystals were shipped away.\nHow many crystals are left?`,
+  (a,b) => `A miner collected ${a} gems.\nShe gave ${b} gems to her team.\nHow many gems does she have now?`,
+  (a,b) => `There were ${a} alien eggs.\n${b} hatched last week.\nHow many eggs are still unhatched?`,
+];
+
+function m5GenQ() {
   const p  = m5ActivePlanet;
   const ex = m5ActiveEx;
 
-  if(p===1){ // Milenia — Números hasta 1000
-    if(ex==='fill'){
-      const n = m5rnd(100,999);
+  // ── Planet 1: Milenia — Numbers up to 1,000 ──────────────────────────────
+  if (p === 1) {
+    if (ex === 'fill') {
+      const n = m5rnd(100, 999);
       return { type:'B', board:false,
-        label:'Misión 01 · ACT-FILL',
-        text: m5n2es(n),
-        sub: 'Escribe el número con dígitos',
+        label:'Milenia · Read & Write',
+        text: typeof n2w === 'function' ? n2w(n) : String(n),
+        sub: 'Write this number using digits',
         answer: n };
     }
-    if(ex==='place'){
-      const n = m5rnd(100,999);
-      const h=Math.floor(n/100), d2=Math.floor((n%100)/10), u=n%10;
-      const parts = m5shuffle([
-        {q:`¿Cuántas centenas tiene ${n}?`, a:h},
-        {q:`¿Cuántas decenas tiene ${n}?`,  a:d2},
-        {q:`¿Cuántas unidades tiene ${n}?`, a:u},
+    if (ex === 'place') {
+      const n = m5rnd(100, 999);
+      const h = Math.floor(n / 100);
+      const d = Math.floor((n % 100) / 10);
+      const u = n % 10;
+      const variants = m5shuffle([
+        { q:`How many hundreds does ${n} have?`,   a:h },
+        { q:`How many tens does ${n} have?`,        a:d },
+        { q:`How many ones does ${n} have?`,        a:u },
+        { q:`What is the hundreds digit of ${n}?`, a:h },
+        { q:`What is the tens digit of ${n}?`,     a:d },
+        { q:`What is the ones digit of ${n}?`,     a:u },
       ]);
-      const chosen = parts[0];
+      const chosen = variants[0];
       return { type:'B', board:false,
-        label:'Misión 01 · ACT-PLACE',
+        label:'Milenia · Place Value',
         text: chosen.q, sub:'', answer: chosen.a };
     }
-    if(ex==='compare'){
-      const a=m5rnd(100,999), b=m5rnd(100,999);
-      const correct = Math.max(a,b);
+    if (ex === 'compare') {
+      const a = m5rnd(100, 999), b = m5rnd(100, 999);
+      const askGreater = Math.random() > .5;
+      const correct = askGreater ? Math.max(a, b) : Math.min(a, b);
       return { type:'A', board:false,
-        label:'Misión 01 · ACT-COMPARE',
-        text:`¿Cuál es mayor?\n${a}   o   ${b}`,
-        sub:'', answer:correct,
-        options: m5choices(correct,1) };
+        label:'Milenia · Compare Numbers',
+        text:`Which number is ${askGreater ? 'greater' : 'smaller'}?\n${a}   or   ${b}`,
+        sub:'', answer: correct, options: m5choices(correct, 80) };
     }
     // order
-    const nums=[m5rnd(100,500),m5rnd(100,500),m5rnd(100,500)];
-    const correct=Math.min(...nums);
+    const nums = [m5rnd(100, 800), m5rnd(100, 800), m5rnd(100, 800)];
+    const findMin = Math.random() > .5;
+    const correct = findMin ? Math.min(...nums) : Math.max(...nums);
+    const optPool = [...new Set([correct, ...nums])].slice(0, 4);
     return { type:'A', board:false,
-      label:'Misión 01 · ACT-ORDER',
-      text:`${nums[0]}  ·  ${nums[1]}  ·  ${nums[2]}\n¿Cuál es el menor?`,
-      sub:'', answer:correct, options:m5shuffle([...new Set([correct,...nums])]) };
+      label:'Milenia · Order Numbers',
+      text:`${nums[0]}  ·  ${nums[1]}  ·  ${nums[2]}\nWhich number is ${findMin ? 'smallest' : 'largest'}?`,
+      sub:'', answer:correct, options:m5shuffle(optPool) };
   }
 
-  if(p===2){ // Columnia — Suma hasta 1000
-    if(ex==='bond'){
-      const total=m5rnd(10,20), parte=m5rnd(1,total-1);
+  // ── Planet 2: Columnia — Addition up to 1,000 ────────────────────────────
+  if (p === 2) {
+    if (ex === 'bond') {
+      const total = m5rnd(50, 300), parte = m5rnd(10, total - 10);
       return { type:'B', board:false,
-        label:'Misión 02 · ACT-BOND',
-        text:`${parte} + __ = ${total}`,
-        sub:'¿Qué número falta?', answer:total-parte };
+        label:'Columnia · Missing Number',
+        text:`${parte} + ___ = ${total}`,
+        sub:'What number is missing?', answer: total - parte };
     }
-    if(ex==='word'){
-      const a=m5rnd(10,200), b=m5rnd(10,200);
+    if (ex === 'fill') {
+      const whole = m5rnd(200, 800), part1 = m5rnd(50, whole - 50);
+      const part2 = whole - part1;
+      const askWhole = Math.random() > .5;
+      if (askWhole) {
+        return { type:'B', board:false,
+          label:'Columnia · Bar Model',
+          text:`Part: ${part1}   Part: ${part2}\nPart + Part = ___`,
+          sub:'What is the whole?', answer: whole };
+      }
+      return { type:'B', board:false,
+        label:'Columnia · Bar Model',
+        text:`Part: ${part1}   Whole: ${whole}\n${part1} + ___ = ${whole}`,
+        sub:'What is the missing part?', answer: part2 };
+    }
+    if (ex === 'word') {
+      const a = m5rnd(50, 400), b = m5rnd(50, 400);
+      const tmpl = M5_ADD_WORDS[m5rnd(0, M5_ADD_WORDS.length - 1)];
       return { type:'A', board:false,
-        label:'Misión 02 · ACT-WORD',
-        text:`Los aliens de Columnia\njuntaron ${a} y ${b} bloques.\n¿Cuántos en total?`,
-        sub:'', answer:a+b, options:m5choices(a+b,2) };
+        label:'Columnia · Word Problem',
+        text: tmpl(a, b), sub:'', answer: a + b, options: m5choices(a + b, 100) };
     }
-    // add / fill → suma vertical con pizarrón
-    const a=m5rnd(100,500), b=m5rnd(100,400);
+    // add — vertical with chalkboard
+    const a = m5rnd(100, 500), b = m5rnd(100, 400);
     return { type:'B', board:true,
-      label:'Misión 02 · ACT-ADD',
+      label:'Columnia · Column Addition',
       text:`${a}\n+ ${b}\n──────`,
-      sub:'Usa el pizarrón para resolverla paso a paso',
-      answer:a+b, opA:a, opB:b, op:'+' };
+      sub:'Use the chalkboard to work it out step by step',
+      answer: a + b, opA:a, opB:b, op:'+' };
   }
 
-  // p===3 — Substrata — Resta hasta 1000
-  if(ex==='word'){
-    const a=m5rnd(200,600), b=m5rnd(10,a-10);
+  // ── Planet 3: Substrata — Subtraction up to 1,000 ───────────────────────
+  if (ex === 'word') {
+    const a = m5rnd(200, 700), b = m5rnd(10, a - 10);
+    const tmpl = M5_SUB_WORDS[m5rnd(0, M5_SUB_WORDS.length - 1)];
     return { type:'A', board:false,
-      label:'Misión 03 · ACT-WORD',
-      text:`Los mineros de Substrata\ntienen ${a} rocas y usan ${b}.\n¿Cuántas quedan?`,
-      sub:'', answer:a-b, options:m5choices(a-b,3) };
+      label:'Substrata · Word Problem',
+      text: tmpl(a, b), sub:'', answer: a - b, options: m5choices(a - b, 100) };
   }
-  if(ex==='compare'){
-    const pairs=[[m5rnd(200,600),m5rnd(50,150)],[m5rnd(200,600),m5rnd(50,150)]];
-    const d0=pairs[0][0]-pairs[0][1], d1=pairs[1][0]-pairs[1][1];
-    const correct=Math.max(d0,d1);
+  if (ex === 'fill') {
+    const total = m5rnd(200, 700), part = m5rnd(10, total - 10);
+    const rest  = total - part;
+    const askMissing = Math.random() > .5;
+    if (askMissing) {
+      return { type:'B', board:false,
+        label:'Substrata · Missing Number',
+        text:`${total} − ___ = ${rest}`,
+        sub:'What is the missing number?', answer: part };
+    }
+    return { type:'B', board:false,
+      label:'Substrata · Missing Number',
+      text:`___ − ${part} = ${rest}`,
+      sub:'What is the starting number?', answer: total };
+  }
+  if (ex === 'compare') {
+    const p0 = [m5rnd(200, 600), m5rnd(10, 150)];
+    const p1 = [m5rnd(200, 600), m5rnd(10, 150)];
+    const d0 = p0[0] - p0[1], d1 = p1[0] - p1[1];
+    const correct = Math.max(d0, d1);
     return { type:'A', board:false,
-      label:'Misión 03 · ACT-COMPARE',
-      text:`¿Cuál diferencia es mayor?\n${pairs[0][0]}−${pairs[0][1]} o ${pairs[1][0]}−${pairs[1][1]}`,
-      sub:'', answer:correct, options:m5choices(correct,3) };
+      label:'Substrata · Bigger Difference',
+      text:`Which difference is bigger?\n${p0[0]} − ${p0[1]}   or   ${p1[0]} − ${p1[1]}`,
+      sub:'', answer: correct, options: m5choices(correct, 80) };
   }
-  // sub / fill → resta vertical con pizarrón
-  const a=m5rnd(200,700), b=m5rnd(10,a-10);
+  // sub — vertical with chalkboard
+  const a = m5rnd(200, 700), b = m5rnd(10, a - 10);
   return { type:'B', board:true,
-    label:'Misión 03 · ACT-SUB',
+    label:'Substrata · Column Subtraction',
     text:`${a}\n− ${b}\n──────`,
-    sub:'Usa el pizarrón para resolverla paso a paso',
-    answer:a-b, opA:a, opB:b, op:'-' };
-}
-
-// ── Start / back ──────────────────────────────────────────────────────────────
-function m5StartGame(){
-  m5G = { lives:3, score:0, done:0, total:8, current:null, locked:false, ansStr:'' };
-  document.getElementById('m5-preview').style.display   = 'none';
-  document.getElementById('m5-game-area').style.display = 'block';
-  m5NextQ();
-}
-
-function m5BackFromGame(){
-  document.getElementById('m5-game-area').style.display = 'none';
-  document.getElementById('m5-preview').style.display   = 'flex';
+    sub:'Use the chalkboard to work it out step by step',
+    answer: a - b, opA:a, opB:b, op:'−' };
 }
 
 // ── Question flow ─────────────────────────────────────────────────────────────
-function m5NextQ(){
+function m5NextQ() {
   m5G.locked = false; m5G.ansStr = '';
   const q = m5GenQ();
   m5G.current = q;
   m5G.done++;
 
-  // Update score bar
   document.getElementById('m5-g-lives').textContent =
-    '⭐'.repeat(m5G.lives) + '🌑'.repeat(3-m5G.lives);
-  document.getElementById('m5-g-prog').textContent  = `${m5G.done} / ${m5G.total}`;
-  document.getElementById('m5-g-pts').textContent   = `${m5G.score} pts`;
+    '❤️'.repeat(m5G.lives) + '🖤'.repeat(3 - m5G.lives);
+  document.getElementById('m5-g-prog').textContent = `${m5G.done} / ${m5G.total}`;
+  document.getElementById('m5-g-pts').textContent  = `${m5G.score} pts`;
 
-  // Question card
   const card = document.getElementById('m5-q-card');
   card.className = 'm5-q-card';
   document.getElementById('m5-q-label').textContent = q.label;
   document.getElementById('m5-q-text').textContent  = q.text;
   document.getElementById('m5-q-sub').textContent   = q.sub || '';
 
-  // Pizarrón
   const board = document.getElementById('m5-board-wrap');
   board.style.display = q.board ? 'block' : 'none';
-  if(q.board){
+  if (q.board) {
     m5SetBoardMode('draw');
-    setTimeout(m5InitCanvas, 60); // wait for layout
+    setTimeout(m5InitCanvas, 60);
   }
 
-  // Answer area
   const area = document.getElementById('m5-answer-area');
   area.innerHTML = '';
-  if(q.type === 'A'){
-    m5BuildChoices(q);
-  } else {
-    m5BuildKeypad();
-  }
+  if (q.type === 'A') { m5BuildChoices(q); }
+  else               { m5BuildKeypad(); }
 }
 
 // ── Type A: choices ───────────────────────────────────────────────────────────
-function m5BuildChoices(q){
+function m5BuildChoices(q) {
   const wrap = document.getElementById('m5-answer-area');
   const grid = document.createElement('div');
   grid.className = 'm5-choices';
-  q.options.slice(0,4).forEach(val => {
+  q.options.slice(0, 4).forEach(val => {
     const btn = document.createElement('button');
-    btn.className = 'm5-choice';
+    btn.className  = 'm5-choice';
     btn.textContent = val;
     btn.onclick = () => m5ChoiceAnswer(val, btn);
     grid.appendChild(btn);
@@ -3260,22 +3357,22 @@ function m5BuildChoices(q){
   wrap.appendChild(grid);
 }
 
-function m5ChoiceAnswer(val, btn){
-  if(m5G.locked) return;
+function m5ChoiceAnswer(val, btn) {
+  if (m5G.locked) return;
   m5G.locked = true;
   const correct = val === m5G.current.answer;
   btn.classList.add(correct ? 'correct' : 'wrong');
-  document.getElementById('m5-q-card').classList.add(correct?'correct':'wrong');
-  if(correct){ m5OnCorrect(); } else { m5OnWrong(); }
+  document.getElementById('m5-q-card').classList.add(correct ? 'correct' : 'wrong');
+  if (correct) { m5OnCorrect(); } else { m5OnWrong(); }
 }
 
 // ── Type B: keypad ────────────────────────────────────────────────────────────
-function m5BuildKeypad(){
+function m5BuildKeypad() {
   const wrap = document.getElementById('m5-answer-area');
   wrap.innerHTML = `
     <div class="m5-ans-wrap">
       <div class="m5-ans-display" id="m5-ans-display">
-        <span class="m5-ans-label">Tu respuesta</span>
+        <span class="m5-ans-label">Your answer</span>
         <span id="m5-ans-val">___</span>
       </div>
       <div class="m5-keypad-grid">
@@ -3295,251 +3392,174 @@ function m5BuildKeypad(){
     </div>`;
 }
 
-function m5KP(k){
-  if(m5G.locked) return;
-  if(k==='⌫'){ m5G.ansStr=m5G.ansStr.slice(0,-1); }
-  else if(k==='✓'){ m5KPcheck(); return; }
-  else if(m5G.ansStr.length<5){ m5G.ansStr+=k; }
-  const el=document.getElementById('m5-ans-val');
-  if(el) el.textContent = m5G.ansStr || '___';
-  // Mirror typed digits on the pizarrón if it's visible
-  if(m5G.current?.board) m5DrawAnswer(m5G.ansStr);
+function m5KP(k) {
+  if (m5G.locked) return;
+  if (k === '⌫')  { m5G.ansStr = m5G.ansStr.slice(0, -1); }
+  else if (k === '✓') { m5KPcheck(); return; }
+  else if (m5G.ansStr.length < 5) { m5G.ansStr += k; }
+  const el = document.getElementById('m5-ans-val');
+  if (el) el.textContent = m5G.ansStr || '___';
+  if (m5G.current?.board) m5DrawAnswer(m5G.ansStr);
 }
 
-function m5KPcheck(){
-  if(!m5G.ansStr) return;
+function m5KPcheck() {
+  if (!m5G.ansStr) return;
   m5G.locked = true;
-  const val = parseInt(m5G.ansStr);
+  const val     = parseInt(m5G.ansStr);
   const correct = val === m5G.current.answer;
-  const disp = document.getElementById('m5-ans-display');
-  if(disp) disp.classList.add(correct?'correct':'wrong');
-  document.getElementById('m5-q-card').classList.add(correct?'correct':'wrong');
-  if(correct){ m5OnCorrect(); } else { m5OnWrong(); }
+  const disp    = document.getElementById('m5-ans-display');
+  if (disp) disp.classList.add(correct ? 'correct' : 'wrong');
+  document.getElementById('m5-q-card').classList.add(correct ? 'correct' : 'wrong');
+  if (correct) { m5OnCorrect(); } else { m5OnWrong(); }
 }
 
 // ── Feedback ──────────────────────────────────────────────────────────────────
-function m5OnCorrect(){
-  m5G.score += 10; m5G.locked = true;
-  showToast('🎉 ¡Correcto!', 'success');
+function m5OnCorrect() {
+  m5G.score += 10; m5G.correct++; m5G.locked = true;
+  showToast('🎉 Correct!', 'success');
   launchConfetti();
   addTowerBlock();
-  if(m5G.done >= m5G.total){ setTimeout(m5Finish, 900); }
+  if (m5G.done >= m5G.total) { setTimeout(m5Finish, 900); }
   else { setTimeout(m5NextQ, 900); }
 }
 
-function m5OnWrong(){
+function m5OnWrong() {
   m5G.lives--;
   document.getElementById('m5-g-lives').textContent =
-    '⭐'.repeat(Math.max(0,m5G.lives))+'🌑'.repeat(3-Math.max(0,m5G.lives));
-  showToast(`❌ Era: ${m5G.current.answer}`, 'error');
-  if(m5G.lives<=0 || m5G.done>=m5G.total){ setTimeout(m5Finish,900); }
+    '❤️'.repeat(Math.max(0, m5G.lives)) + '🖤'.repeat(3 - Math.max(0, m5G.lives));
+  showToast(`❌ Answer: ${m5G.current.answer}`, 'error');
+  if (m5G.lives <= 0 || m5G.done >= m5G.total) { setTimeout(m5Finish, 900); }
   else { setTimeout(m5NextQ, 1000); }
 }
 
-function m5Finish(){
-  const pct = Math.round(m5G.score / (m5G.total*10) * 100);
-  if(pct>=60) m5Completed[m5ActivePlanet]=true;
+// ── Finish & stars ────────────────────────────────────────────────────────────
+function m5Finish() {
+  const stars = m5CalcStars(m5G.correct, m5G.total);
+  const prev  = m5GetStars(m5ActivePlanet, m5ActiveEx);
+  m5SetStars(m5ActivePlanet, m5ActiveEx, Math.max(stars, prev));
   navRefreshPlanets();
-  document.getElementById('m5-game-area').style.display='none';
-  document.getElementById('m5-preview').style.display='flex';
-  const p = M5_PLANETS[m5ActivePlanet];
-  showToast(`${pct>=80?'🏆':pct>=60?'⭐':'💪'} ${p.name}: ${m5G.score}/${m5G.total*10} pts`, pct>=60?'success':'');
+
+  document.getElementById('m5-game-area').style.display  = 'none';
+  document.getElementById('m5-end-screen').style.display = 'block';
+
+  const titles = ['Keep Trying! 💪', 'Mission Complete! ⭐', 'Well Done! 🌟', 'Perfect! 🏆'];
+  document.getElementById('m5-end-title').textContent = titles[stars] || titles[0];
+  document.getElementById('m5-end-sub').textContent   = `${m5G.correct} / ${m5G.total} correct`;
+
+  for (let i = 1; i <= 3; i++) {
+    const el = document.getElementById(`m5-end-star-${i}`);
+    el.textContent = i <= stars ? '⭐' : '☆';
+    el.classList.toggle('empty', i > stars);
+  }
 }
 
-// ── Canvas: pizarrón ──────────────────────────────────────────────────────────
-function m5InitCanvas(){
+// ── Canvas: chalkboard ────────────────────────────────────────────────────────
+function m5InitCanvas() {
   const canvas = document.getElementById('m5-canvas');
-  if(!canvas) return;
-  m5Dpr = window.devicePixelRatio||1;
+  if (!canvas) return;
+  m5Dpr = window.devicePixelRatio || 1;
   const w = canvas.offsetWidth, h = canvas.offsetHeight;
-  canvas.width=w*m5Dpr; canvas.height=h*m5Dpr;
+  canvas.width  = w * m5Dpr;
+  canvas.height = h * m5Dpr;
   const ctx = canvas.getContext('2d');
-  ctx.scale(m5Dpr,m5Dpr);
-  m5Canvas=canvas; m5Ctx=ctx;
+  ctx.scale(m5Dpr, m5Dpr);
+  m5Canvas = canvas; m5Ctx = ctx;
   m5SetChalkStyle();
   m5DrawBoardQuestion();
 
   canvas.addEventListener('mousedown',  m5MD);
   canvas.addEventListener('mousemove',  m5MM);
-  canvas.addEventListener('mouseup',    ()=>{ m5Drawing=false; });
-  canvas.addEventListener('mouseleave', ()=>{ m5Drawing=false; });
-  canvas.addEventListener('touchstart', m5TS, {passive:false});
-  canvas.addEventListener('touchmove',  m5TM, {passive:false});
-  canvas.addEventListener('touchend',   ()=>{ m5Drawing=false; });
+  canvas.addEventListener('mouseup',    () => { m5Drawing = false; });
+  canvas.addEventListener('mouseleave', () => { m5Drawing = false; });
+  canvas.addEventListener('touchstart', m5TS, { passive:false });
+  canvas.addEventListener('touchmove',  m5TM, { passive:false });
+  canvas.addEventListener('touchend',   () => { m5Drawing = false; });
 }
 
-function m5SetChalkStyle(){
-  if(!m5Ctx) return;
+function m5SetChalkStyle() {
+  if (!m5Ctx) return;
   m5Ctx.strokeStyle = 'rgba(240,242,210,.88)';
   m5Ctx.lineWidth   = 2.2;
   m5Ctx.lineCap     = 'round';
   m5Ctx.lineJoin    = 'round';
 }
 
-function m5pos(canvas,e){
-  const r=canvas.getBoundingClientRect();
-  return { x:e.clientX-r.left, y:e.clientY-r.top };
+function m5pos(canvas, e) {
+  const r = canvas.getBoundingClientRect();
+  return { x: e.clientX - r.left, y: e.clientY - r.top };
 }
 
-function m5MD(e){ if(m5BoardMode!=='draw')return; m5Drawing=true; const p=m5pos(m5Canvas,e); m5Lx=p.x;m5Ly=p.y; }
-function m5MM(e){ if(!m5Drawing||m5BoardMode!=='draw') return; const p=m5pos(m5Canvas,e); m5Stroke(m5Lx,m5Ly,p.x,p.y); m5Lx=p.x;m5Ly=p.y; }
-function m5TS(e){ e.preventDefault(); if(m5BoardMode!=='draw')return; m5Drawing=true; const t=e.touches[0],p=m5pos(m5Canvas,t); m5Lx=p.x;m5Ly=p.y; }
-function m5TM(e){ e.preventDefault(); if(!m5Drawing)return; const t=e.touches[0],p=m5pos(m5Canvas,t); m5Stroke(m5Lx,m5Ly,p.x,p.y); m5Lx=p.x;m5Ly=p.y; }
+function m5MD(e) { if (m5BoardMode !== 'draw') return; m5Drawing = true; const p = m5pos(m5Canvas, e); m5Lx = p.x; m5Ly = p.y; }
+function m5MM(e) { if (!m5Drawing || m5BoardMode !== 'draw') return; const p = m5pos(m5Canvas, e); m5Stroke(m5Lx, m5Ly, p.x, p.y); m5Lx = p.x; m5Ly = p.y; }
+function m5TS(e) { e.preventDefault(); if (m5BoardMode !== 'draw') return; m5Drawing = true; const t = e.touches[0], p = m5pos(m5Canvas, t); m5Lx = p.x; m5Ly = p.y; }
+function m5TM(e) { e.preventDefault(); if (!m5Drawing) return; const t = e.touches[0], p = m5pos(m5Canvas, t); m5Stroke(m5Lx, m5Ly, p.x, p.y); m5Lx = p.x; m5Ly = p.y; }
 
-function m5Stroke(x1,y1,x2,y2){
-  if(!m5Ctx) return;
+function m5Stroke(x1, y1, x2, y2) {
+  if (!m5Ctx) return;
   m5SetChalkStyle();
-  m5Ctx.beginPath(); m5Ctx.moveTo(x1,y1); m5Ctx.lineTo(x2,y2); m5Ctx.stroke();
+  m5Ctx.beginPath(); m5Ctx.moveTo(x1, y1); m5Ctx.lineTo(x2, y2); m5Ctx.stroke();
 }
 
-function m5DrawBoardQuestion(){
-  if(!m5Ctx||!m5G.current) return;
-  const q=m5G.current;
-  const W=m5Canvas.offsetWidth, H=m5Canvas.offsetHeight;
+function m5DrawBoardQuestion() {
+  if (!m5Ctx || !m5G.current) return;
+  const q = m5G.current;
+  const W = m5Canvas.offsetWidth;
   m5Ctx.save();
-  m5Ctx.font='bold 16px "Courier New",monospace';
-  m5Ctx.fillStyle='rgba(240,242,180,.45)';
-  // Draw vertical operation scaffold
-  const opA=String(q.opA), opB=String(q.opB), op=q.op;
-  const maxLen=Math.max(opA.length,opB.length)+2;
-  const charW=11, startX=W*.5-(maxLen*charW*.5);
-  const y1=30,y2=52,y3=68,y4=84;
-  m5Ctx.fillText(opA.padStart(maxLen,' '), startX, y1);
-  m5Ctx.fillText((op+' '+opB).padStart(maxLen,' '), startX, y2);
-  m5Ctx.fillStyle='rgba(240,242,180,.3)';
-  m5Ctx.fillRect(startX, y3-2, maxLen*charW, 2);
-  m5Ctx.fillStyle='rgba(240,242,180,.2)';
-  m5Ctx.fillText('?'.padStart(maxLen,' '), startX, y4);
+  m5Ctx.font = 'bold 16px "Courier New",monospace';
+  m5Ctx.fillStyle = 'rgba(240,242,180,.45)';
+  const opA = String(q.opA), opB = String(q.opB), op = q.op;
+  const maxLen = Math.max(opA.length, opB.length) + 2;
+  const charW = 11, startX = W * .5 - (maxLen * charW * .5);
+  const y1 = 30, y2 = 52, y3 = 68, y4 = 84;
+  m5Ctx.fillText(opA.padStart(maxLen, ' '), startX, y1);
+  m5Ctx.fillText((op + ' ' + opB).padStart(maxLen, ' '), startX, y2);
+  m5Ctx.fillStyle = 'rgba(240,242,180,.3)';
+  m5Ctx.fillRect(startX, y3 - 2, maxLen * charW, 2);
+  m5Ctx.fillStyle = 'rgba(240,242,180,.2)';
+  m5Ctx.fillText('?'.padStart(maxLen, ' '), startX, y4);
   m5Ctx.restore();
 }
 
-function m5DrawAnswer(ansStr){
-  if(!m5Ctx||!m5G.current) return;
-  const q=m5G.current;
-  const W=m5Canvas.offsetWidth;
-  const maxLen=Math.max(String(q.opA).length,String(q.opB).length)+2;
-  const charW=11, startX=W*.5-(maxLen*charW*.5);
-  // Clear answer area only (bottom strip)
-  m5Ctx.clearRect(startX, 72, maxLen*charW+16, 22);
+function m5DrawAnswer(ansStr) {
+  if (!m5Ctx || !m5G.current) return;
+  const q = m5G.current;
+  const W = m5Canvas.offsetWidth;
+  const maxLen = Math.max(String(q.opA).length, String(q.opB).length) + 2;
+  const charW = 11, startX = W * .5 - (maxLen * charW * .5);
+  m5Ctx.clearRect(startX, 72, maxLen * charW + 16, 22);
   m5Ctx.save();
-  m5Ctx.font='bold 16px "Courier New",monospace';
-  m5Ctx.fillStyle='rgba(240,242,180,.85)';
-  m5Ctx.fillText(ansStr.padStart(maxLen,' '), startX, 84);
+  m5Ctx.font = 'bold 16px "Courier New",monospace';
+  m5Ctx.fillStyle = 'rgba(240,242,180,.85)';
+  m5Ctx.fillText(ansStr.padStart(maxLen, ' '), startX, 84);
   m5Ctx.restore();
 }
 
-function m5ClearBoard(){
-  if(!m5Ctx) return;
-  m5Ctx.clearRect(0,0,m5Canvas.offsetWidth,m5Canvas.offsetHeight);
+function m5ClearBoard() {
+  if (!m5Ctx) return;
+  m5Ctx.clearRect(0, 0, m5Canvas.offsetWidth, m5Canvas.offsetHeight);
   m5DrawBoardQuestion();
-  m5CalcExpr='';
-  document.getElementById('m5-calc-expr').textContent='_';
+  m5CalcExpr = '';
+  document.getElementById('m5-calc-expr').textContent = '_';
 }
 
-// ── Board modes ───────────────────────────────────────────────────────────────
-function m5SetBoardMode(mode){
-  m5BoardMode=mode;
-  document.getElementById('m5-btn-draw').classList.toggle('active',mode==='draw');
-  document.getElementById('m5-btn-calc').classList.toggle('active',mode==='calc');
-  document.getElementById('m5-calc-overlay').classList.toggle('show',mode==='calc');
-  document.getElementById('m5-canvas').style.cursor=mode==='draw'?'crosshair':'default';
+function m5SetBoardMode(mode) {
+  m5BoardMode = mode;
+  document.getElementById('m5-btn-draw').classList.toggle('active', mode === 'draw');
+  document.getElementById('m5-btn-calc').classList.toggle('active', mode === 'calc');
+  document.getElementById('m5-calc-overlay').classList.toggle('show', mode === 'calc');
+  document.getElementById('m5-canvas').style.cursor = mode === 'draw' ? 'crosshair' : 'default';
 }
 
-// ── Calc strip keys ───────────────────────────────────────────────────────────
-function m5CK(k){
-  if(k==='⌫'){ m5CalcExpr=m5CalcExpr.slice(0,-1); }
-  else if(k==='='){
-    try{
-      const expr=m5CalcExpr.replace(/−/g,'-');
-      const result=Function('"use strict";return('+expr+')')();
-      m5CalcExpr+=`= ${result}`;
-    }catch(e){ m5CalcExpr+='=?'; }
-  }
-  else { m5CalcExpr+=k; }
-  document.getElementById('m5-calc-expr').textContent=m5CalcExpr||'_';
-}
-
-// ── Main navigation ───────────────────────────────────────────────────────────
-
-function navPlanet(n) {
-  if (n > 1 && !m5Completed[n - 1]) return;
-
-  // Hide proto, show space
-  document.getElementById('proto-subnav').style.display = 'none';
-  [1,2,3,4].forEach(i => {
-    document.getElementById('mod'+i).style.display = 'none';
-  });
-  document.getElementById('mod5').style.display = '';
-
-  // Update top nav state
-  document.getElementById('proto-tab').classList.remove('p-active');
-  [1,2,3].forEach(i => {
-    document.getElementById('pnav-'+i).classList.toggle('p-active', i === n);
-  });
-
-  // Update planet nav lock/check badges
-  navRefreshPlanets();
-
-  // Select planet in module 5
-  m5ActivePlanet = n;
-  m5ActiveEx     = M5_PLANETS[n].exercises[0].id;
-  m5RenderPlanet(n);
-  m5InitStars();
-}
-
-function navProto() {
-  // Hide space, show proto
-  document.getElementById('mod5').style.display = 'none';
-  document.getElementById('proto-subnav').style.display = 'flex';
-  document.getElementById('proto-tab').classList.add('p-active');
-  [1,2,3].forEach(i => document.getElementById('pnav-'+i).classList.remove('p-active'));
-
-  // Show first proto module by default
-  protoSetMod(1);
-}
-
-function protoSetMod(n) {
-  [1,2,3,4].forEach(i => {
-    document.getElementById('mod'+i).style.display = i === n ? '' : 'none';
-    document.getElementById('proto-btn-'+i).classList.toggle('active', i === n);
-  });
-  if (n === 2) m2Init();
-  if (n === 3) m3Init();
-  if (n === 4) m4Init();
-}
-
-function navRefreshPlanets() {
-  [1,2,3].forEach(n => {
-    const btn   = document.getElementById('pnav-'+n);
-    const lock  = document.getElementById('plock-'+n);
-    const check = document.getElementById('pcheck-'+n);
-    const unlocked = n === 1 || m5Completed[n-1];
-    btn.classList.toggle('p-locked', !unlocked);
-    if (lock)  lock.style.display  = unlocked ? 'none' : 'inline';
-    if (check) check.style.display = m5Completed[n] ? 'inline' : 'none';
-  });
-}
-
-// ── Planet header (inside space) ─────────────────────────────────────────────
-function m5RenderPlanet(n) {
-  const p = M5_PLANETS[n];
-  document.getElementById('m5-ph-emoji').textContent = p.emoji;
-  document.getElementById('m5-ph-title').textContent = p.name;
-  document.getElementById('m5-ph-sub').textContent   = `${p.concepto} · Misión ${p.mision}`;
-
-  // Pills
-  const pillsEl = document.getElementById('m5-ex-pills');
-  pillsEl.innerHTML = '';
-  p.exercises.forEach(ex => {
-    const pill = document.createElement('span');
-    pill.className = 'm5-ex-pill' + (ex.id === m5ActiveEx ? ' active' : '');
-    pill.textContent = ex.label;
-    pill.dataset.id  = ex.id;
-    pill.onclick     = () => m5SetEx(ex.id);
-    pillsEl.appendChild(pill);
-  });
-
-  m5UpdatePreview();
+function m5CK(k) {
+  if (k === '⌫') { m5CalcExpr = m5CalcExpr.slice(0, -1); }
+  else if (k === '=') {
+    try {
+      const expr   = m5CalcExpr.replace(/−/g, '-');
+      const result = Function('"use strict";return(' + expr + ')')();
+      m5CalcExpr += `= ${result}`;
+    } catch(e) { m5CalcExpr += '=?'; }
+  } else { m5CalcExpr += k; }
+  document.getElementById('m5-calc-expr').textContent = m5CalcExpr || '_';
 }
 
 // ── Animated stars ────────────────────────────────────────────────────────────
@@ -3547,19 +3567,18 @@ function m5InitStars() {
   const layer = document.getElementById('m5-stars-layer');
   if (!layer) return;
   layer.innerHTML = '';
-  const count = 55;
-  for (let i = 0; i < count; i++) {
-    const s    = document.createElement('div');
-    const big  = Math.random() > .85;
-    const size = big ? (1.5 + Math.random()) : (0.8 + Math.random() * .6);
-    const dur  = (2 + Math.random() * 3).toFixed(1);
-    const del  = (Math.random() * 4).toFixed(1);
-    const op   = (.35 + Math.random() * .65).toFixed(2);
+  for (let i = 0; i < 55; i++) {
+    const s   = document.createElement('div');
+    const big = Math.random() > .85;
+    const sz  = big ? (1.5 + Math.random()) : (0.8 + Math.random() * .6);
+    const dur = (2 + Math.random() * 3).toFixed(1);
+    const del = (Math.random() * 4).toFixed(1);
+    const op  = (.35 + Math.random() * .65).toFixed(2);
     s.className = 'm5-star';
     s.style.cssText = [
-      `width:${size}px`, `height:${size}px`,
-      `left:${(Math.random()*98).toFixed(1)}%`,
-      `top:${(Math.random()*98).toFixed(1)}%`,
+      `width:${sz}px`, `height:${sz}px`,
+      `left:${(Math.random() * 98).toFixed(1)}%`,
+      `top:${(Math.random() * 98).toFixed(1)}%`,
       `opacity:${op}`,
       `animation:m5twinkle ${dur}s ${del}s infinite`,
       big ? `box-shadow:0 0 3px rgba(180,220,255,.6)` : ''
@@ -3568,10 +3587,59 @@ function m5InitStars() {
   }
 }
 
+// ── Main navigation ───────────────────────────────────────────────────────────
+function navPlanet(n) {
+  document.getElementById('proto-subnav').style.display = 'none';
+  [1, 2, 3, 4].forEach(i => {
+    document.getElementById('mod' + i).style.display = 'none';
+  });
+  document.getElementById('mod5').style.display = '';
+
+  document.getElementById('proto-tab').classList.remove('p-active');
+  [1, 2, 3].forEach(i => {
+    document.getElementById('pnav-' + i).classList.toggle('p-active', i === n);
+  });
+
+  navRefreshPlanets();
+  m5ActivePlanet = n;
+  m5ActiveEx     = M5_PLANETS[n].exercises[0].id;
+  m5RenderPlanet(n);
+  m5InitStars();
+}
+
+function navProto() {
+  document.getElementById('mod5').style.display = 'none';
+  document.getElementById('proto-subnav').style.display = 'flex';
+  document.getElementById('proto-tab').classList.add('p-active');
+  [1, 2, 3].forEach(i => document.getElementById('pnav-' + i).classList.remove('p-active'));
+  protoSetMod(1);
+}
+
+function protoSetMod(n) {
+  [1, 2, 3, 4].forEach(i => {
+    document.getElementById('mod' + i).style.display = i === n ? '' : 'none';
+    document.getElementById('proto-btn-' + i).classList.toggle('active', i === n);
+  });
+  if (n === 2) m2Init();
+  if (n === 3) m3Init();
+  if (n === 4) m4Init();
+}
+
+function navRefreshPlanets() {
+  [1, 2, 3].forEach(n => {
+    const btn   = document.getElementById('pnav-' + n);
+    const check = document.getElementById('pcheck-' + n);
+    btn.classList.remove('p-locked');
+    if (check) {
+      const hasProgress = M5_PLANETS[n].exercises.some(ex => m5GetStars(n, ex.id) > 0);
+      check.style.display = hasProgress ? 'inline' : 'none';
+    }
+  });
+}
+
 // ── Boot ──────────────────────────────────────────────────────────────────────
 window.speechSynthesis.onvoiceschanged = () => {};
 init();
-// Start on planet 1 by default
 navPlanet(1);
 </script>
 </body>
