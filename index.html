@@ -732,31 +732,6 @@
       cursor: crosshair; touch-action: none;
     }
 
-    /* Calc overlay (type mode) */
-    .m5-calc-overlay {
-      position: absolute; bottom: 0; left: 0; right: 0;
-      background: rgba(6,12,8,.78); border-top: 1px solid rgba(255,255,255,.08);
-      padding: 6px 10px 8px; display: none;
-    }
-    .m5-calc-overlay.show { display: block; }
-    .m5-calc-expr {
-      font-family: 'Courier New', monospace; font-size: .92rem; font-weight: 700;
-      color: rgba(240,240,200,.92); letter-spacing: 2px;
-      min-height: 22px; margin-bottom: 5px;
-    }
-    .m5-calc-keys {
-      display: grid; grid-template-columns: repeat(7,1fr); gap: 4px;
-    }
-    .m5-ck {
-      padding: 6px 2px; border-radius: 6px; border: 1px solid rgba(255,255,255,.1);
-      background: rgba(255,255,255,.07); color: white;
-      font-size: .8rem; font-weight: 700; cursor: pointer; transition: all .1s;
-      font-family: 'Courier New', monospace;
-    }
-    .m5-ck:active   { transform: scale(.92); }
-    .m5-ck.op-key   { color: #8cf; background: rgba(80,160,255,.12); }
-    .m5-ck.eq-key   { color: #8f8; background: rgba(80,200,80,.15); }
-    .m5-ck.del-key  { color: #f99; background: rgba(255,80,80,.1); }
 
     /* ── Enter-answer CTA (board mode) ── */
     .m5-enter-ans-btn {
@@ -1551,31 +1526,10 @@
         <div class="m5-board-wrap" id="m5-board-wrap">
           <div class="m5-board-toolbar">
             <span class="m5-board-label">Chalkboard</span>
-            <button class="m5-board-btn active" id="m5-btn-draw" onclick="m5SetBoardMode('draw')">✏️ Draw</button>
-            <button class="m5-board-btn"        id="m5-btn-calc" onclick="m5SetBoardMode('calc')">🔢 Calculate</button>
-            <button class="m5-board-btn erase"  onclick="m5ClearBoard()">🗑️ Erase</button>
+            <button class="m5-board-btn erase" onclick="m5ClearBoard()">🗑️ Erase</button>
           </div>
           <div class="m5-board-canvas-wrap">
             <canvas id="m5-canvas"></canvas>
-            <div class="m5-calc-overlay" id="m5-calc-overlay">
-              <div class="m5-calc-expr" id="m5-calc-expr">_</div>
-              <div class="m5-calc-keys">
-                <button class="m5-ck" onclick="m5CK('7')">7</button>
-                <button class="m5-ck" onclick="m5CK('8')">8</button>
-                <button class="m5-ck" onclick="m5CK('9')">9</button>
-                <button class="m5-ck op-key" onclick="m5CK('+')">+</button>
-                <button class="m5-ck op-key" onclick="m5CK('-')">−</button>
-                <button class="m5-ck eq-key" onclick="m5CK('=')">=</button>
-                <button class="m5-ck del-key" onclick="m5CK('⌫')">⌫</button>
-                <button class="m5-ck" onclick="m5CK('4')">4</button>
-                <button class="m5-ck" onclick="m5CK('5')">5</button>
-                <button class="m5-ck" onclick="m5CK('6')">6</button>
-                <button class="m5-ck" onclick="m5CK('1')">1</button>
-                <button class="m5-ck" onclick="m5CK('2')">2</button>
-                <button class="m5-ck" onclick="m5CK('3')">3</button>
-                <button class="m5-ck" onclick="m5CK('0')">0</button>
-              </div>
-            </div>
           </div>
         </div>
 
@@ -3350,7 +3304,6 @@ function m5NextQ() {
 
   if (q.board) {
     board.style.display = 'block';
-    m5SetBoardMode('draw');
     setTimeout(m5InitCanvas, 60);
     // Keypad hidden — show CTA instead so board gets full space
     area.innerHTML = `<button class="m5-enter-ans-btn" onclick="m5ShowKeypadForBoard()">📝 Ready — Enter Answer</button>`;
@@ -3577,28 +3530,6 @@ function m5ClearBoard() {
   if (!m5Ctx) return;
   m5Ctx.clearRect(0, 0, m5Canvas.offsetWidth, m5Canvas.offsetHeight);
   m5DrawBoardQuestion();
-  m5CalcExpr = '';
-  document.getElementById('m5-calc-expr').textContent = '_';
-}
-
-function m5SetBoardMode(mode) {
-  m5BoardMode = mode;
-  document.getElementById('m5-btn-draw').classList.toggle('active', mode === 'draw');
-  document.getElementById('m5-btn-calc').classList.toggle('active', mode === 'calc');
-  document.getElementById('m5-calc-overlay').classList.toggle('show', mode === 'calc');
-  document.getElementById('m5-canvas').style.cursor = mode === 'draw' ? 'crosshair' : 'default';
-}
-
-function m5CK(k) {
-  if (k === '⌫') { m5CalcExpr = m5CalcExpr.slice(0, -1); }
-  else if (k === '=') {
-    try {
-      const expr   = m5CalcExpr.replace(/−/g, '-');
-      const result = Function('"use strict";return(' + expr + ')')();
-      m5CalcExpr += `= ${result}`;
-    } catch(e) { m5CalcExpr += '=?'; }
-  } else { m5CalcExpr += k; }
-  document.getElementById('m5-calc-expr').textContent = m5CalcExpr || '_';
 }
 
 // ── Animated stars ────────────────────────────────────────────────────────────
