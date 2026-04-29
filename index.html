@@ -681,6 +681,11 @@
     }
     .m5-q-card.correct { border-color: #2a9d5c; background: rgba(42,157,92,0.1); }
     .m5-q-card.wrong   { border-color: #d94040; background: rgba(217,64,64,0.08); }
+    .m5-q-card--board {
+      padding: 7px 14px; border-radius: 10px;
+    }
+    .m5-q-card--board .m5-q-text { display: none; }
+    .m5-q-card--board .m5-q-sub  { display: none; }
     .m5-q-label {
       font-size: 0.62rem; font-weight: 800; text-transform: uppercase;
       letter-spacing: 2px; color: rgba(100,180,255,0.55); margin-bottom: 6px;
@@ -3293,7 +3298,7 @@ function m5NextQ() {
   document.getElementById('m5-g-pts').textContent  = `${m5G.score} pts`;
 
   const card = document.getElementById('m5-q-card');
-  card.className = 'm5-q-card';
+  card.className = 'm5-q-card' + (q.board ? ' m5-q-card--board' : '');
   document.getElementById('m5-q-label').textContent = q.label;
   document.getElementById('m5-q-text').textContent  = q.text;
   document.getElementById('m5-q-sub').textContent   = q.sub || '';
