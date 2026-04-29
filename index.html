@@ -423,12 +423,31 @@
       .nav-counter  { font-size: 1rem; }
       .m2-question  { font-size: clamp(1.15rem, 3vw, 1.4rem); }
       .m2-opt-btn   { padding: 13px 18px; }
+
+      /* Module 5 — tablet */
+      .app          { max-width: min(760px, 100%); }
+      .game-wrapper { max-width: min(900px, 100%); }
+      .m5-space     { padding: 22px 20px; }
+      .m5-q-card    { padding: 20px; }
+      .m5-q-text    { font-size: clamp(1.6rem, 4.5vw, 2.6rem); }
+      .m5-mission-card { padding: 16px 18px; }
+      .m5-mc-title  { font-size: 1rem; }
+      .m5-mc-desc   { font-size: .75rem; }
+      .m5-mc-stars  { font-size: 1.1rem; }
+      .m5-key       { font-size: 1.3rem; padding: 16px 8px; }
+      .m5-choice    { font-size: 1.2rem; padding: 18px 10px; }
+      .m5-ans-display { font-size: 1.1rem; padding: 14px 18px; }
+      #m5-ans-val   { font-size: 2rem; }
+      .m5-enter-ans-btn { padding: 18px; font-size: 1.1rem; }
+      .m5-g-score   { font-size: .9rem; padding: 10px 16px; }
+      .m5-end-star  { font-size: 2.8rem; }
     }
 
     /* Desktop (≥ 900px) */
     @media (min-width: 900px) {
       body { align-items: center; min-height: 100vh; padding: 40px; }
-      .app  { padding: 36px 44px; border-radius: 28px; }
+      .app  { padding: 36px 44px; border-radius: 28px; max-width: min(860px, 100%); }
+      .game-wrapper { max-width: min(1060px, 100%); }
       .card { height: 250px; }
       .header h1 { font-size: 2rem; }
       .header p  { font-size: 1rem; }
@@ -440,6 +459,30 @@
       .nav-btn     { width: 50px; height: 50px; }
       .ref-num     { font-size: 0.85rem; }
       .ref-word    { font-size: 0.8rem; }
+
+      /* Module 5 — desktop */
+      .m5-space     { padding: 28px 28px; border-radius: 22px; }
+      .m5-q-card    { padding: 22px 28px; border-radius: 20px; }
+      .m5-q-text    { font-size: clamp(1.8rem, 3vw, 2.8rem); }
+      .m5-q-label   { font-size: .72rem; }
+      .m5-mission-card { padding: 18px 22px; border-radius: 18px; }
+      .m5-mc-num    { font-size: .65rem; }
+      .m5-mc-title  { font-size: 1.05rem; }
+      .m5-mc-desc   { font-size: .78rem; }
+      .m5-mc-stars  { font-size: 1.2rem; }
+      .m5-keypad-grid { gap: 10px; }
+      .m5-key       { font-size: 1.5rem; padding: 20px 10px; border-radius: 14px; }
+      .m5-choice    { font-size: 1.35rem; padding: 22px 14px; border-radius: 16px; }
+      .m5-ans-display { padding: 16px 22px; border-radius: 14px; }
+      #m5-ans-val   { font-size: 2.4rem; }
+      .m5-enter-ans-btn { padding: 20px; font-size: 1.2rem; border-radius: 16px; }
+      .m5-g-score   { font-size: 1rem; padding: 12px 20px; gap: 20px; }
+      .m5-end-star  { font-size: 3.4rem; }
+      .m5-end-title { font-size: 1.6rem; }
+      .m5-board-wrap { border-width: 4px; border-radius: 14px; }
+      .m5-planet-header { margin-bottom: 20px; }
+      .m5-ph-title  { font-size: 1.3rem; }
+      .m5-ph-sub    { font-size: .8rem; }
     }
 
     /* ── Module bar ── */
@@ -733,7 +776,8 @@
         #1d3a23;
     }
     #m5-canvas {
-      display: block; width: 100%; height: 130px;
+      display: block; width: 100%;
+      height: clamp(130px, 28vw, 340px);
       cursor: crosshair; touch-action: none;
     }
 
