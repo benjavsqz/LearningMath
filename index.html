@@ -758,6 +758,21 @@
     .m5-ck.eq-key   { color: #8f8; background: rgba(80,200,80,.15); }
     .m5-ck.del-key  { color: #f99; background: rgba(255,80,80,.1); }
 
+    /* ── Enter-answer CTA (board mode) ── */
+    .m5-enter-ans-btn {
+      width: 100%; padding: 15px; border-radius: 12px;
+      background: linear-gradient(135deg, #1a5fa8, #0d3d7a);
+      border: 1.5px solid rgba(100,180,255,.35);
+      color: white; font-size: 1rem; font-weight: 800;
+      cursor: pointer; margin-top: 8px; position: relative; z-index: 2;
+      letter-spacing: .3px;
+    }
+    .m5-enter-ans-btn:active { transform: scale(.97); }
+    .m5-back-to-board-btn {
+      background: none; border: none; color: rgba(100,180,255,.7);
+      font-size: .8rem; cursor: pointer; padding: 0 0 8px; display: block;
+    }
+
     /* ── Answer keypad ── */
     .m5-ans-wrap { position: relative; z-index: 2; }
     .m5-ans-display {
@@ -3330,16 +3345,40 @@ function m5NextQ() {
   document.getElementById('m5-q-sub').textContent   = q.sub || '';
 
   const board = document.getElementById('m5-board-wrap');
-  board.style.display = q.board ? 'block' : 'none';
+  const area  = document.getElementById('m5-answer-area');
+  area.innerHTML = '';
+
   if (q.board) {
+    board.style.display = 'block';
     m5SetBoardMode('draw');
     setTimeout(m5InitCanvas, 60);
+    // Keypad hidden — show CTA instead so board gets full space
+    area.innerHTML = `<button class="m5-enter-ans-btn" onclick="m5ShowKeypadForBoard()">📝 Ready — Enter Answer</button>`;
+  } else {
+    board.style.display = 'none';
+    if (q.type === 'A') { m5BuildChoices(q); }
+    else               { m5BuildKeypad(); }
   }
+}
 
+// ── Board ↔ keypad toggle (board exercises) ──────────────────────────────────
+function m5ShowKeypadForBoard() {
+  document.getElementById('m5-board-wrap').style.display = 'none';
   const area = document.getElementById('m5-answer-area');
   area.innerHTML = '';
-  if (q.type === 'A') { m5BuildChoices(q); }
-  else               { m5BuildKeypad(); }
+  m5BuildKeypad();
+  const backBtn = document.createElement('button');
+  backBtn.className   = 'm5-back-to-board-btn';
+  backBtn.textContent = '← Back to chalkboard';
+  backBtn.onclick     = m5ShowBoardFromKeypad;
+  area.querySelector('.m5-ans-wrap').prepend(backBtn);
+}
+
+function m5ShowBoardFromKeypad() {
+  document.getElementById('m5-board-wrap').style.display = 'block';
+  const area = document.getElementById('m5-answer-area');
+  area.innerHTML = `<button class="m5-enter-ans-btn" onclick="m5ShowKeypadForBoard()">📝 Ready — Enter Answer</button>`;
+  setTimeout(m5InitCanvas, 60);
 }
 
 // ── Type A: choices ───────────────────────────────────────────────────────────
