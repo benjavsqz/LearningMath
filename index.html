@@ -828,7 +828,51 @@
       display: flex; align-items: center; gap: 8px;
       box-shadow: 0 4px 20px rgba(0,0,30,.4);
     }
-    .planets-row { display: flex; gap: 6px; flex: 1; }
+    /* Compact nav bar */
+    .nav-bar {
+      display: flex; align-items: center; gap: 10px; flex: 1;
+    }
+    .nav-ham {
+      background: rgba(255,255,255,.07); border: 1px solid rgba(255,255,255,.12);
+      border-radius: 10px; padding: 8px 10px; cursor: pointer;
+      display: flex; flex-direction: column; gap: 4px; flex-shrink: 0;
+    }
+    .nav-ham span {
+      display: block; width: 18px; height: 2px;
+      background: rgba(180,210,255,.8); border-radius: 2px;
+      transition: all .2s;
+    }
+    .nav-ham.open span:nth-child(1) { transform: translateY(6px) rotate(45deg); }
+    .nav-ham.open span:nth-child(2) { opacity: 0; }
+    .nav-ham.open span:nth-child(3) { transform: translateY(-6px) rotate(-45deg); }
+    .nav-cur {
+      display: flex; align-items: center; gap: 9px; flex: 1;
+    }
+    .nav-cur-ball {
+      width: 32px; height: 32px; border-radius: 50%; flex-shrink: 0;
+      box-shadow: 0 2px 8px rgba(0,0,0,.4);
+    }
+    #nav-cur-ball.ball-1 {
+      background: radial-gradient(circle at 38% 32%, #f5e090 0%, #c89010 40%, #4a2800 80%, #1a0a00 100%);
+    }
+    #nav-cur-ball.ball-2 {
+      background: radial-gradient(circle at 38% 32%, #ffb870 0%, #d06010 45%, #4a1a00 80%, #180600 100%);
+    }
+    #nav-cur-ball.ball-3 {
+      background: radial-gradient(circle at 38% 32%, #c8a060 0%, #704010 45%, #2a1000 80%, #0a0400 100%);
+    }
+    .nav-cur-info { display: flex; flex-direction: column; line-height: 1.2; }
+    .nav-cur-name    { font-size: .85rem; font-weight: 800; color: white; }
+    .nav-cur-concept { font-size: .65rem; color: rgba(150,190,255,.5); }
+
+    /* Planet dropdown panel */
+    .nav-planets-panel {
+      display: flex; gap: 6px;
+      background: linear-gradient(140deg, #060b1a 0%, #0c1530 100%);
+      border-radius: 14px; padding: 10px;
+      margin-top: 4px;
+      box-shadow: 0 4px 20px rgba(0,0,30,.4);
+    }
 
     /* Planet button */
     .planet-btn {
@@ -1173,33 +1217,43 @@
 
 <div class="app">
 
-  <!-- Main nav: planetas + prototipo -->
+  <!-- Main nav: compact bar + hamburger dropdown -->
   <div class="main-nav">
-    <div class="planets-row">
-
-      <div class="planet-btn p-active" id="pnav-1" onclick="navPlanet(1)">
-        <div class="planet-ball"></div>
-        <div class="planet-name">Milenia</div>
-        <div class="planet-concept">Up to 1,000</div>
-        <span class="planet-check" id="pcheck-1">✓</span>
+    <div class="nav-bar">
+      <button class="nav-ham" id="nav-ham" onclick="navTogglePlanets()" aria-label="Select planet">
+        <span></span><span></span><span></span>
+      </button>
+      <div class="nav-cur" id="nav-cur">
+        <div class="nav-cur-ball" id="nav-cur-ball"></div>
+        <div class="nav-cur-info">
+          <span class="nav-cur-name" id="nav-cur-name">Milenia</span>
+          <span class="nav-cur-concept" id="nav-cur-concept">Up to 1,000</span>
+        </div>
       </div>
-
-      <div class="planet-btn" id="pnav-2" onclick="navPlanet(2)">
-        <div class="planet-ball"></div>
-        <div class="planet-name">Columnia</div>
-        <div class="planet-concept">Addition</div>
-        <span class="planet-check" id="pcheck-2">✓</span>
-      </div>
-
-      <div class="planet-btn" id="pnav-3" onclick="navPlanet(3)">
-        <div class="planet-ball"></div>
-        <div class="planet-name">Substrata</div>
-        <div class="planet-concept">Subtraction</div>
-        <span class="planet-check" id="pcheck-3">✓</span>
-      </div>
-
     </div>
     <div class="proto-tab" id="proto-tab" onclick="navProto()">🔬<br>Proto</div>
+  </div>
+
+  <!-- Planet dropdown (hidden until hamburger tap) -->
+  <div class="nav-planets-panel" id="nav-planets-panel" style="display:none">
+    <div class="planet-btn p-active" id="pnav-1" onclick="navPlanet(1)">
+      <div class="planet-ball"></div>
+      <div class="planet-name">Milenia</div>
+      <div class="planet-concept">Up to 1,000</div>
+      <span class="planet-check" id="pcheck-1">✓</span>
+    </div>
+    <div class="planet-btn" id="pnav-2" onclick="navPlanet(2)">
+      <div class="planet-ball"></div>
+      <div class="planet-name">Columnia</div>
+      <div class="planet-concept">Addition</div>
+      <span class="planet-check" id="pcheck-2">✓</span>
+    </div>
+    <div class="planet-btn" id="pnav-3" onclick="navPlanet(3)">
+      <div class="planet-ball"></div>
+      <div class="planet-name">Substrata</div>
+      <div class="planet-concept">Subtraction</div>
+      <span class="planet-check" id="pcheck-3">✓</span>
+    </div>
   </div>
 
   <!-- Proto sub-nav (old modules) -->
@@ -3563,7 +3617,30 @@ function m5InitStars() {
 }
 
 // ── Main navigation ───────────────────────────────────────────────────────────
+const NAV_CONCEPTS = { 1:'Up to 1,000', 2:'Addition', 3:'Subtraction' };
+
+function navTogglePlanets() {
+  const panel = document.getElementById('nav-planets-panel');
+  const ham   = document.getElementById('nav-ham');
+  const open  = panel.style.display === 'none';
+  panel.style.display = open ? 'flex' : 'none';
+  ham.classList.toggle('open', open);
+}
+
+function navClosePlanets() {
+  document.getElementById('nav-planets-panel').style.display = 'none';
+  document.getElementById('nav-ham').classList.remove('open');
+}
+
+function navUpdateCompact(n) {
+  document.getElementById('nav-cur-name').textContent    = M5_PLANETS[n].name;
+  document.getElementById('nav-cur-concept').textContent = NAV_CONCEPTS[n] || '';
+  const ball = document.getElementById('nav-cur-ball');
+  ball.className = `nav-cur-ball ball-${n}`;
+}
+
 function navPlanet(n) {
+  navClosePlanets();
   document.getElementById('proto-subnav').style.display = 'none';
   [1, 2, 3, 4].forEach(i => {
     document.getElementById('mod' + i).style.display = 'none';
@@ -3575,6 +3652,7 @@ function navPlanet(n) {
     document.getElementById('pnav-' + i).classList.toggle('p-active', i === n);
   });
 
+  navUpdateCompact(n);
   navRefreshPlanets();
   m5ActivePlanet = n;
   m5ActiveEx     = M5_PLANETS[n].exercises[0].id;
