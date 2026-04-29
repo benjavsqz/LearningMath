@@ -824,6 +824,137 @@
     }
     .m5-back-btn:hover { background: rgba(100,180,255,.1); color: #adf; }
 
+    /* ══ MAIN NAV (planets + proto) ══════════════════════════════════════════ */
+    .main-nav {
+      background: linear-gradient(140deg, #060b1a 0%, #0c1530 100%);
+      border-radius: 18px; padding: 10px 10px 10px;
+      margin-bottom: 14px;
+      border: 1px solid rgba(100,180,255,.1);
+      display: flex; align-items: center; gap: 8px;
+      box-shadow: 0 4px 20px rgba(0,0,30,.4);
+    }
+    .planets-row { display: flex; gap: 6px; flex: 1; }
+
+    /* Planet button */
+    .planet-btn {
+      flex: 1; display: flex; flex-direction: column; align-items: center;
+      gap: 5px; padding: 8px 4px 9px; border-radius: 14px; cursor: pointer;
+      border: 1.5px solid rgba(255,255,255,.06);
+      background: rgba(255,255,255,.03); transition: all .22s;
+      position: relative;
+    }
+    .planet-btn:hover:not(.p-locked) {
+      background: rgba(100,180,255,.1); border-color: rgba(100,180,255,.28);
+      transform: translateY(-2px);
+    }
+    .planet-btn.p-active {
+      background: rgba(100,180,255,.15); border-color: rgba(100,180,255,.4);
+    }
+    .planet-btn.p-locked { opacity:.32; cursor:not-allowed; }
+
+    /* CSS planet sphere */
+    .planet-ball {
+      width: 42px; height: 42px; border-radius: 50%;
+      position: relative; overflow: hidden; flex-shrink: 0;
+      box-shadow: inset 0 -4px 10px rgba(0,0,0,.5),
+                  inset 2px 3px 6px rgba(255,255,255,.18);
+    }
+    /* Milenia — dorado/azul */
+    #pnav-1 .planet-ball {
+      background: radial-gradient(circle at 38% 32%,
+        #f5e090 0%, #c89010 40%, #4a2800 80%, #1a0a00 100%);
+      box-shadow: inset 0 -4px 10px rgba(0,0,0,.5),
+                  inset 2px 3px 6px rgba(255,230,120,.35),
+                  0 0 14px rgba(200,160,20,.4);
+    }
+    #pnav-1 .planet-ball::after {
+      content:''; position:absolute; inset:0;
+      background: repeating-linear-gradient(18deg,
+        transparent,transparent 5px, rgba(255,255,255,.06) 5px, rgba(255,255,255,.06) 6px);
+    }
+    /* Columnia — naranja/gris */
+    #pnav-2 .planet-ball {
+      background: radial-gradient(circle at 38% 32%,
+        #ffb870 0%, #d06010 45%, #4a1a00 80%, #180600 100%);
+      box-shadow: inset 0 -4px 10px rgba(0,0,0,.5),
+                  inset 2px 3px 6px rgba(255,180,80,.3),
+                  0 0 14px rgba(210,100,30,.4);
+    }
+    #pnav-2 .planet-ball::after {
+      content:''; position:absolute; inset:0;
+      background: repeating-linear-gradient(-8deg,
+        transparent,transparent 7px, rgba(255,160,60,.08) 7px, rgba(255,160,60,.08) 8px);
+    }
+    /* Substrata — marrón/tierra */
+    #pnav-3 .planet-ball {
+      background: radial-gradient(circle at 38% 32%,
+        #c8a060 0%, #704010 45%, #2a1000 80%, #0a0400 100%);
+      box-shadow: inset 0 -4px 10px rgba(0,0,0,.5),
+                  inset 2px 3px 6px rgba(200,160,80,.25),
+                  0 0 14px rgba(160,100,20,.35);
+    }
+    #pnav-3 .planet-ball::after {
+      content:''; position:absolute; inset:0;
+      background:
+        radial-gradient(circle at 65% 70%, rgba(100,50,10,.5) 0%, transparent 35%),
+        radial-gradient(circle at 28% 38%, rgba(80,40,5,.4) 0%, transparent 28%);
+    }
+
+    .planet-name    { font-size:.66rem; font-weight:800; color:rgba(180,210,255,.85); text-align:center; }
+    .planet-concept { font-size:.52rem; color:rgba(130,170,220,.45); text-align:center; display:none; }
+    @media(min-width:380px){ .planet-concept { display:block; } }
+    .planet-lock  { position:absolute; top:4px; right:5px; font-size:.58rem; color:rgba(180,180,180,.35); }
+    .planet-check { position:absolute; top:4px; right:5px; font-size:.6rem; color:#5cf; display:none; }
+
+    /* Prototipo tab */
+    .proto-tab {
+      padding: 8px 9px; border-radius: 12px; flex-shrink: 0;
+      background: rgba(255,255,255,.04); border: 1px solid rgba(255,255,255,.08);
+      color: rgba(180,200,240,.45); font-size:.62rem; font-weight:800;
+      cursor:pointer; transition:all .18s; text-align:center; line-height:1.4;
+    }
+    .proto-tab:hover { background:rgba(255,255,255,.1); color:rgba(200,220,255,.8); }
+    .proto-tab.p-active { background:rgba(255,255,255,.12); border-color:rgba(255,255,255,.22); color:white; }
+
+    /* Proto subnav */
+    .proto-subnav {
+      display:flex; background:#1a3a5c; border-radius:12px;
+      padding:4px; margin-bottom:14px; gap:3px;
+    }
+    .proto-mod-btn {
+      flex:1; padding:9px 4px; border:none; border-radius:8px;
+      font-size:.75rem; font-weight:700; cursor:pointer;
+      color:rgba(255,255,255,.45); background:transparent; transition:all .2s;
+    }
+    .proto-mod-btn.active { background:white; color:#1a3a5c; box-shadow:0 2px 8px rgba(100,160,220,.2); }
+
+    /* ══ IMPROVED SPACE BACKGROUND ═══════════════════════════════════════════ */
+    .m5-space {
+      background:
+        radial-gradient(ellipse 75% 45% at 82% 12%, rgba(80,0,160,.32) 0%, transparent 65%),
+        radial-gradient(ellipse 55% 45% at 12% 88%, rgba(0,70,180,.28) 0%, transparent 60%),
+        radial-gradient(ellipse 45% 35% at 55% 58%, rgba(0,120,100,.12) 0%, transparent 55%),
+        linear-gradient(165deg, #040810 0%, #070e1e 50%, #050b16 100%) !important;
+    }
+
+    /* Star twinkle */
+    @keyframes m5twinkle {
+      0%,100%{ opacity:1; transform:scale(1); }
+      50%    { opacity:.15; transform:scale(.6); }
+    }
+    .m5-star {
+      position:absolute; border-radius:50%; background:white; pointer-events:none;
+    }
+
+    /* Planet info header (inside space) */
+    .m5-planet-header {
+      display:flex; align-items:center; gap:10px;
+      margin-bottom:12px; position:relative; z-index:2;
+    }
+    .m5-ph-emoji { font-size:1.8rem; line-height:1; flex-shrink:0; }
+    .m5-ph-title { color:white; font-weight:800; font-size:.95rem; }
+    .m5-ph-sub   { color:rgba(180,210,255,.45); font-size:.62rem; margin-top:1px; }
+
     /* Hamburger button */
     .m5-menu-btn {
       display: flex; align-items: center; gap: 8px;
@@ -985,17 +1116,47 @@
 
 <div class="app">
 
-  <!-- Module selector -->
-  <div class="module-bar">
-    <button class="mod-btn active" id="mod-btn-1" onclick="setModule(1)">🔢 Words</button>
-    <button class="mod-btn"        id="mod-btn-2" onclick="setModule(2)">⚖️ Compare</button>
-    <button class="mod-btn"        id="mod-btn-3" onclick="setModule(3)">🎮 Order</button>
-    <button class="mod-btn"        id="mod-btn-4" onclick="setModule(4)">➕ Math</button>
-    <button class="mod-btn"        id="mod-btn-5" onclick="setModule(5)">🚀 Astro</button>
+  <!-- Main nav: planetas + prototipo -->
+  <div class="main-nav">
+    <div class="planets-row">
+
+      <div class="planet-btn p-active" id="pnav-1" onclick="navPlanet(1)">
+        <div class="planet-ball"></div>
+        <div class="planet-name">Milenia</div>
+        <div class="planet-concept">Hasta 1.000</div>
+        <span class="planet-check" id="pcheck-1">✓</span>
+      </div>
+
+      <div class="planet-btn p-locked" id="pnav-2" onclick="navPlanet(2)">
+        <div class="planet-ball"></div>
+        <div class="planet-name">Columnia</div>
+        <div class="planet-concept">Suma</div>
+        <span class="planet-lock" id="plock-2">🔒</span>
+        <span class="planet-check" id="pcheck-2">✓</span>
+      </div>
+
+      <div class="planet-btn p-locked" id="pnav-3" onclick="navPlanet(3)">
+        <div class="planet-ball"></div>
+        <div class="planet-name">Substrata</div>
+        <div class="planet-concept">Resta</div>
+        <span class="planet-lock" id="plock-3">🔒</span>
+        <span class="planet-check" id="pcheck-3">✓</span>
+      </div>
+
+    </div>
+    <div class="proto-tab" id="proto-tab" onclick="navProto()">🔬<br>Proto</div>
+  </div>
+
+  <!-- Proto sub-nav (old modules) -->
+  <div class="proto-subnav" id="proto-subnav" style="display:none">
+    <button class="proto-mod-btn active" id="proto-btn-1" onclick="protoSetMod(1)">🔢 Words</button>
+    <button class="proto-mod-btn"        id="proto-btn-2" onclick="protoSetMod(2)">⚖️ Compare</button>
+    <button class="proto-mod-btn"        id="proto-btn-3" onclick="protoSetMod(3)">🎮 Order</button>
+    <button class="proto-mod-btn"        id="proto-btn-4" onclick="protoSetMod(4)">➕ Math</button>
   </div>
 
   <!-- ═══ MODULE 1: Number Words ═══ -->
-  <div id="mod1">
+  <div id="mod1" style="display:none">
   <div class="header">
     <h1>🔢 Numbers in English</h1>
     <p>Learn to write numbers in English!</p>
@@ -1270,53 +1431,48 @@
   </div><!-- end mod4 -->
 
   <!-- ═══ MODULE 5: Astro Math ═══ -->
-  <div id="mod5" style="display:none">
+  <div id="mod5">
 
-    <!-- Space arena (always visible once in module) -->
     <div class="m5-space">
-      <div class="m5-stars"></div>
+      <!-- Animated stars (populated by JS) -->
+      <div id="m5-stars-layer"></div>
 
-      <!-- Header row: hamburger + current planet name -->
-      <div class="m5-space-header">
-        <button class="m5-menu-trigger" id="m5-menu-trigger" onclick="m5ToggleMenu()">
-          <span></span><span></span><span></span>
-        </button>
-        <div class="m5-current-planet">
-          <span class="m5-current-planet-emoji" id="m5-cur-emoji">🔴</span>
-          <span id="m5-cur-name">Marte</span>
+      <!-- Planet info header -->
+      <div class="m5-planet-header">
+        <span class="m5-ph-emoji" id="m5-ph-emoji">📜</span>
+        <div>
+          <div class="m5-ph-title"   id="m5-ph-title">Milenia</div>
+          <div class="m5-ph-sub"     id="m5-ph-sub">Números hasta 1.000 · Misión 01</div>
         </div>
-        <div style="width:38px"></div><!-- spacer -->
       </div>
 
       <!-- Exercise type pills -->
       <div class="m5-ex-pills" id="m5-ex-pills"></div>
 
-      <!-- Preview / game area -->
+      <!-- Preview card -->
       <div class="m5-preview" id="m5-preview">
-        <div class="m5-preview-emoji" id="m5-prev-emoji">🚀</div>
+        <div class="m5-preview-emoji" id="m5-prev-emoji">📜</div>
         <div class="m5-preview-title" id="m5-prev-title">¡Listo para despegar!</div>
-        <div class="m5-preview-desc"  id="m5-prev-desc">Elige un tipo de ejercicio arriba y presiona Jugar</div>
-        <button class="m5-start-btn" onclick="m5StartGame()">▶ Jugar</button>
+        <div class="m5-preview-desc"  id="m5-prev-desc">Elige un tipo de ejercicio y presiona Jugar</div>
+        <button class="m5-start-btn"  onclick="m5StartGame()">▶ Jugar</button>
       </div>
 
-      <!-- Game area (shown when Jugar is clicked) -->
+      <!-- Game area -->
       <div id="m5-game-area" style="display:none">
 
-        <!-- Score bar -->
         <div class="m5-g-score">
           <span class="m5-g-lives" id="m5-g-lives">⭐⭐⭐</span>
           <span class="m5-g-prog"  id="m5-g-prog">1 / 8</span>
           <span class="m5-g-pts"   id="m5-g-pts">0 pts</span>
         </div>
 
-        <!-- Question card -->
         <div class="m5-q-card" id="m5-q-card">
           <div class="m5-q-label" id="m5-q-label">Misión 01 · Milenia</div>
           <div class="m5-q-text"  id="m5-q-text">?</div>
           <div class="m5-q-sub"   id="m5-q-sub"></div>
         </div>
 
-        <!-- Pizarrón (visible solo en ejercicios verticales) -->
+        <!-- Pizarrón (solo ejercicios verticales) -->
         <div class="m5-board-wrap" id="m5-board-wrap">
           <div class="m5-board-toolbar">
             <span class="m5-board-label">Pizarrón</span>
@@ -1326,7 +1482,6 @@
           </div>
           <div class="m5-board-canvas-wrap">
             <canvas id="m5-canvas"></canvas>
-            <!-- Calc overlay (type mode) -->
             <div class="m5-calc-overlay" id="m5-calc-overlay">
               <div class="m5-calc-expr" id="m5-calc-expr">_</div>
               <div class="m5-calc-keys">
@@ -1349,51 +1504,10 @@
           </div>
         </div>
 
-        <!-- Answer area (filled by JS) -->
         <div id="m5-answer-area"></div>
-
-        <!-- Back -->
-        <button class="m5-back-btn" onclick="m5BackFromGame()">← Volver a planetas</button>
+        <button class="m5-back-btn" onclick="m5BackFromGame()">← Volver</button>
 
       </div><!-- end m5-game-area -->
-
-      <!-- Panel overlay (click to close) -->
-      <div class="m5-panel-overlay" id="m5-overlay" onclick="m5CloseMenu()"></div>
-
-      <!-- Side panel -->
-      <div class="m5-side-panel" id="m5-side-panel">
-        <div class="m5-panel-title">Selecciona planeta</div>
-
-        <div class="m5-planet-item m5-planet-active" id="m5-item-1" onclick="m5SelectPlanet(1)">
-          <span class="m5-planet-icon">📜</span>
-          <div class="m5-planet-info">
-            <div class="m5-planet-label">Milenia</div>
-            <div class="m5-planet-hint">Números hasta 1000</div>
-          </div>
-          <span class="m5-planet-check" id="m5-check-1" style="display:none">✓</span>
-        </div>
-
-        <div class="m5-planet-item m5-planet-locked" id="m5-item-2" onclick="m5SelectPlanet(2)">
-          <span class="m5-planet-icon">🏗️</span>
-          <div class="m5-planet-info">
-            <div class="m5-planet-label">Columnia</div>
-            <div class="m5-planet-hint">Suma hasta 1000</div>
-          </div>
-          <span class="m5-lock-icon" id="m5-lock-2">🔒</span>
-          <span class="m5-planet-check" id="m5-check-2" style="display:none">✓</span>
-        </div>
-
-        <div class="m5-planet-item m5-planet-locked" id="m5-item-3" onclick="m5SelectPlanet(3)">
-          <span class="m5-planet-icon">⛏️</span>
-          <div class="m5-planet-info">
-            <div class="m5-planet-label">Substrata</div>
-            <div class="m5-planet-hint">Resta hasta 1000</div>
-          </div>
-          <span class="m5-lock-icon" id="m5-lock-3">🔒</span>
-          <span class="m5-planet-check" id="m5-check-3" style="display:none">✓</span>
-        </div>
-      </div>
-
     </div><!-- end m5-space -->
 
   </div><!-- end mod5 -->
@@ -2871,10 +2985,8 @@ let m5ActiveEx      = 'mix';
 let m5Completed     = { 1: false, 2: false, 3: false };
 
 function m5Init() {
-  m5ActivePlanet = 1;
-  m5ActiveEx     = M5_PLANETS[1].exercises[0].id;
-  m5RenderPlanet(1);
-  m5RefreshPanel();
+  // Called by old setModule(5) — redirect to navPlanet
+  navPlanet(m5ActivePlanet || 1);
 }
 
 function m5ToggleMenu() {
@@ -3227,7 +3339,7 @@ function m5OnWrong(){
 function m5Finish(){
   const pct = Math.round(m5G.score / (m5G.total*10) * 100);
   if(pct>=60) m5Completed[m5ActivePlanet]=true;
-  m5RefreshPanel();
+  navRefreshPlanets();
   document.getElementById('m5-game-area').style.display='none';
   document.getElementById('m5-preview').style.display='flex';
   const p = M5_PLANETS[m5ActivePlanet];
@@ -3347,9 +3459,120 @@ function m5CK(k){
   document.getElementById('m5-calc-expr').textContent=m5CalcExpr||'_';
 }
 
+// ── Main navigation ───────────────────────────────────────────────────────────
+
+function navPlanet(n) {
+  if (n > 1 && !m5Completed[n - 1]) return;
+
+  // Hide proto, show space
+  document.getElementById('proto-subnav').style.display = 'none';
+  [1,2,3,4].forEach(i => {
+    document.getElementById('mod'+i).style.display = 'none';
+  });
+  document.getElementById('mod5').style.display = '';
+
+  // Update top nav state
+  document.getElementById('proto-tab').classList.remove('p-active');
+  [1,2,3].forEach(i => {
+    document.getElementById('pnav-'+i).classList.toggle('p-active', i === n);
+  });
+
+  // Update planet nav lock/check badges
+  navRefreshPlanets();
+
+  // Select planet in module 5
+  m5ActivePlanet = n;
+  m5ActiveEx     = M5_PLANETS[n].exercises[0].id;
+  m5RenderPlanet(n);
+  m5InitStars();
+}
+
+function navProto() {
+  // Hide space, show proto
+  document.getElementById('mod5').style.display = 'none';
+  document.getElementById('proto-subnav').style.display = 'flex';
+  document.getElementById('proto-tab').classList.add('p-active');
+  [1,2,3].forEach(i => document.getElementById('pnav-'+i).classList.remove('p-active'));
+
+  // Show first proto module by default
+  protoSetMod(1);
+}
+
+function protoSetMod(n) {
+  [1,2,3,4].forEach(i => {
+    document.getElementById('mod'+i).style.display = i === n ? '' : 'none';
+    document.getElementById('proto-btn-'+i).classList.toggle('active', i === n);
+  });
+  if (n === 2) m2Init();
+  if (n === 3) m3Init();
+  if (n === 4) m4Init();
+}
+
+function navRefreshPlanets() {
+  [1,2,3].forEach(n => {
+    const btn   = document.getElementById('pnav-'+n);
+    const lock  = document.getElementById('plock-'+n);
+    const check = document.getElementById('pcheck-'+n);
+    const unlocked = n === 1 || m5Completed[n-1];
+    btn.classList.toggle('p-locked', !unlocked);
+    if (lock)  lock.style.display  = unlocked ? 'none' : 'inline';
+    if (check) check.style.display = m5Completed[n] ? 'inline' : 'none';
+  });
+}
+
+// ── Planet header (inside space) ─────────────────────────────────────────────
+function m5RenderPlanet(n) {
+  const p = M5_PLANETS[n];
+  document.getElementById('m5-ph-emoji').textContent = p.emoji;
+  document.getElementById('m5-ph-title').textContent = p.name;
+  document.getElementById('m5-ph-sub').textContent   = `${p.concepto} · Misión ${p.mision}`;
+
+  // Pills
+  const pillsEl = document.getElementById('m5-ex-pills');
+  pillsEl.innerHTML = '';
+  p.exercises.forEach(ex => {
+    const pill = document.createElement('span');
+    pill.className = 'm5-ex-pill' + (ex.id === m5ActiveEx ? ' active' : '');
+    pill.textContent = ex.label;
+    pill.dataset.id  = ex.id;
+    pill.onclick     = () => m5SetEx(ex.id);
+    pillsEl.appendChild(pill);
+  });
+
+  m5UpdatePreview();
+}
+
+// ── Animated stars ────────────────────────────────────────────────────────────
+function m5InitStars() {
+  const layer = document.getElementById('m5-stars-layer');
+  if (!layer) return;
+  layer.innerHTML = '';
+  const count = 55;
+  for (let i = 0; i < count; i++) {
+    const s    = document.createElement('div');
+    const big  = Math.random() > .85;
+    const size = big ? (1.5 + Math.random()) : (0.8 + Math.random() * .6);
+    const dur  = (2 + Math.random() * 3).toFixed(1);
+    const del  = (Math.random() * 4).toFixed(1);
+    const op   = (.35 + Math.random() * .65).toFixed(2);
+    s.className = 'm5-star';
+    s.style.cssText = [
+      `width:${size}px`, `height:${size}px`,
+      `left:${(Math.random()*98).toFixed(1)}%`,
+      `top:${(Math.random()*98).toFixed(1)}%`,
+      `opacity:${op}`,
+      `animation:m5twinkle ${dur}s ${del}s infinite`,
+      big ? `box-shadow:0 0 3px rgba(180,220,255,.6)` : ''
+    ].join(';');
+    layer.appendChild(s);
+  }
+}
+
 // ── Boot ──────────────────────────────────────────────────────────────────────
 window.speechSynthesis.onvoiceschanged = () => {};
 init();
+// Start on planet 1 by default
+navPlanet(1);
 </script>
 </body>
 </html>
